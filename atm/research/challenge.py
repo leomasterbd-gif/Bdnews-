@@ -25,8 +25,9 @@ TARGET_PCT = 100.0
 
 
 def oracle_long_only(close: np.ndarray, fee: float = 0.001) -> float:
-    """Max achievable compounded return (%) trading close-to-close long-only with
-    proportional fee per side. DP over states flat/long (log space)."""
+    """Max achievable compounded return (%) trading through a price path long-only with
+    proportional fee per side. DP over states flat/long (log space). Pass an intrabar path
+    (see ohlc_path) for a strict upper bound on any long-only spot execution."""
     lf = np.log(1 - fee)
     flat, long_ = 0.0, -np.inf
     for t in range(len(close)):
@@ -36,6 +37,12 @@ def oracle_long_only(close: np.ndarray, fee: float = 0.001) -> float:
     return float(100 * (np.exp(max(flat, long_ + lf)) - 1))
 
 
+def ohlc_path(o, h, l, c) -> np.ndarray:
+    """Optimistic intrabar path o -> low -> high -> close for each bar: buying every low and selling
+    every high is the best any real execution could do, so the oracle on this path is a strict bound."""
+    return np.column_stack([o, l, h, c]).ravel()
+
+
 def windows(df: pd.DataFrame, hours: float = 4.0, warmup: int = 300) -> list[tuple[int, int]]:
     step = pd.Series(df.index).diff().median()
     n = int(pd.Timedelta(hours=hours) / step)
@@ -43,18 +50,28 @@ def windows(df: pd.DataFrame, hours: float = 4.0, warmup: int = 300) -> list[tup
 
 
 def run_challenge(datasets: dict[str, tuple[pd.DataFrame, MarketSpec]], strategies: dict[str, tuple[StrategySpec, dict]],
-                  limits: RiskLimits, costs: CostModel = CostModel(), capital: float = 100.0) -> dict:
+                  limits: RiskLimits, costs: CostModel = CostModel(), capital: float = 100.0,
+                  min_start: dict | None = None) -> dict:
+    """min_start[strategy][dataset] = first bar index a strategy may be evaluated from (used to keep
+    walk-forward-validated parameter sets on data they were not selected on)."""
+    min_start = min_start or {}
     per_strategy: dict[str, list[dict]] = {k: [] for k in strategies}
     oracle_rows = []
     for dname, (df, market) in datasets.items():
         wins = windows(df)
         c = df.close.to_numpy()
+        o_, h_, l_ = (df[k].to_numpy() for k in ("open", "high", "low"))
         for s, e in wins:
-            oracle_rows.append({"dataset": dname, "start": str(df.index[s]), "oracle_pct": oracle_long_only(c[s:e]),
+            oracle_rows.append({"dataset": dname, "start": str(df.index[s]),
+                                "oracle_pct": oracle_long_only(ohlc_path(o_[s:e], h_[s:e], l_[s:e], c[s:e])),
+                                "oracle_close_pct": oracle_long_only(c[s:e]),
                                 "price_change_pct": 100 * (c[e - 1] / c[s] - 1)})
         for sname, (spec, params) in strategies.items():
             sig = spec.signals(df, params)
+            first = min_start.get(sname, {}).get(dname, 0)
             for s, e in wins:
+                if s < first:
+                    continue
                 r = run_backtest(df, sig, market, limits, costs, capital_usd=capital, start=s, end=e)
                 m = r.metrics
                 per_strategy[sname].append({"dataset": dname, "start": str(df.index[s]), "ret_pct": m["net_return_pct"],
@@ -81,9 +98,12 @@ def run_challenge(datasets: dict[str, tuple[pd.DataFrame, MarketSpec]], strategi
             "by_dataset": {d: summarize_returns(np.array([x["ret_pct"] for x in rows if x["dataset"] == d])) for d in datasets},
         }
     o = np.array([x["oracle_pct"] for x in oracle_rows])
+    oc = np.array([x["oracle_close_pct"] for x in oracle_rows])
     pc = np.array([x["price_change_pct"] for x in oracle_rows])
     oracle = {"sessions": len(o), "oracle_target_hit_rate_pct": float(100 * (o >= TARGET_PCT).mean()),
               "oracle_median_pct": float(np.median(o)), "oracle_p95_pct": float(np.percentile(o, 95)), "oracle_max_pct": float(o.max()),
+              "oracle_definition": "perfect foresight, buys every bar low and sells every bar high (optimistic intrabar path), 100% capital, no risk limits, 0.1% fee per side",
+              "oracle_close_to_close_median_pct": float(np.median(oc)), "oracle_close_to_close_max_pct": float(oc.max()),
               "abs_price_change_median_pct": float(np.median(np.abs(pc))), "abs_price_change_max_pct": float(np.abs(pc).max())}
     # Bootstrap: probability of ever reaching +100% cumulatively over many sessions with the best strategy
     return {"target_pct": TARGET_PCT, "capital_usd": capital, "summary": summary, "oracle": oracle,

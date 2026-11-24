@@ -146,7 +146,7 @@ def test_ml_and_rl_run(btc):
     res = evaluate_ml(btc, MARKETS["BTCUSDT"], RiskLimits.load(), n_folds=2)
     assert "logistic" in res["models"] and all(0 <= (m["mean_auc"] or 0.5) <= 1 for m in res["models"].values())
     Q = train_q(btc, 1500, episodes=2)
-    s = q_signals(btc, Q)
+    s = q_signals(btc, Q, 1500)
     assert len(s) == len(btc)
 
 
@@ -181,3 +181,76 @@ def test_paper_trade_columns_whitelisted(tmp_path):
     st.add_paper_trade(session="s", symbol="BTCUSDT", side="BUY", qty=1.0, price=1.0, fee=0.0, ts="t", source="REPLAY", strategy="x", pnl=None)
     with pytest.raises(ValueError):
         st.add_paper_trade(**{"session); DROP TABLE audit_log; --": 1})
+
+
+def _trader():
+    from atm.backtest.execution import MARKETS
+    from atm.data.loader import load_ohlcv
+    from atm.exchange.paper import PaperTrader
+    from atm.risk.limits import RiskLimits
+    from atm.strategies.library import STRATEGIES
+    df = load_ohlcv("BTC_USDT-5m")
+    return PaperTrader(STRATEGIES["buy_hold"], {}, MARKETS["BTCUSDT"], RiskLimits.load(), history=df.iloc[:600]), df
+
+
+def test_emergency_stop_cancels_pending_buy():
+    """Audit #1."""
+    from atm.data.stream import ReplayFeed
+    t, df = _trader()
+    feed = iter(ReplayFeed(df, start=600))
+    for _ in range(3):
+        t.on_bar(next(feed))
+        if t.pending and t.pending["side"] == "buy":
+            break
+    assert t.pending and t.pending["side"] == "buy"
+    t.emergency_stop("test")
+    for _ in range(3):
+        t.on_bar(next(feed))
+    assert t.qty == 0 and not [x for x in t.trades if x["side"] == "BUY"]
+
+
+def test_session_end_flattens_position():
+    """Audit #2."""
+    from atm.data.stream import ReplayFeed
+    t, df = _trader()
+    t.session_hours = 1.0
+    for bar in ReplayFeed(df, start=600):
+        if not t.running and not t.pending:
+            break
+        t.on_bar(bar)
+    assert t.qty == 0 and t.running is False
+    assert t.trades[-1]["side"] == "SELL"
+
+
+def test_settings_atomic_and_bad_bodies(client):
+    """Audit #18."""
+    client.post("/api/settings", headers=H, json={"language": "bn"})
+    assert client.post("/api/settings", headers=H, json={"language": "en", "feed": "live"}).status_code == 400
+    assert client.get("/api/settings", headers=H).json()["settings"]["language"] == "bn"
+    assert client.post("/api/settings", headers=H, json=[1, 2]).status_code == 400
+    assert client.post("/api/login", content=b"not json", headers={"content-type": "application/json"}).status_code == 400
+    assert len(client.get("/api/audit?limit=-1", headers=H).json()["entries"]) <= 1
+
+
+def test_eligibility_uses_latest_version(client):
+    """Audit #9: an old VALIDATED row must not keep a later-rejected strategy eligible."""
+    st = client.st
+    st.store.register("momentum", "momentum", {}, "VALIDATED", {}, "BTC_USDT-5m")
+    assert st.eligible_strategy("BTC_USDT-5m")[2] == "VALIDATED"
+    st.store.register("momentum", "momentum", {}, "REJECTED", {}, "BTC_USDT-5m")
+    assert st.eligible_strategy("BTC_USDT-5m")[0] is None
+
+
+def test_telegram_ignores_group_chats():
+    from atm.telegram.bot import TelegramBot
+    api, tg = FakeAPI(), FakeTG()
+    bot = TelegramBot("123:abc", 42, api, session=tg)
+    assert bot.process({"message": {"from": {"id": 42}, "chat": {"id": -100123}, "text": "/balance"}}) is None
+
+
+def test_rl_states_do_not_leak(btc):
+    """Audit #11."""
+    from atm.ml.rl import _states
+    a = _states(btc, 1500)[:1500]
+    b = _states(btc.iloc[:1500], 1500)
+    assert (a == b).all()

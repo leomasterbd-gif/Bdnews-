@@ -20,6 +20,13 @@ class Gates:
     min_positive_fold_frac: float = 0.6
     min_bootstrap_p_positive: float = 0.90
     stress_cost_mult: float = 2.0
+    n_candidates: int = 1          # number of strategy x dataset candidates tested in the same cycle
+    family_alpha: float = 0.10     # family-wise error budget (Bonferroni)
+
+    @property
+    def bootstrap_threshold(self) -> float:
+        """Bonferroni-corrected: P(mean trade > 0) must exceed 1 - alpha / N."""
+        return max(self.min_bootstrap_p_positive, 1 - self.family_alpha / max(1, self.n_candidates))
 
 
 def split_points(n: int, n_folds: int, holdout_frac: float, warmup: int) -> tuple[list[tuple[int, int, int]], tuple[int, int]]:
@@ -34,7 +41,7 @@ def split_points(n: int, n_folds: int, holdout_frac: float, warmup: int) -> tupl
     return folds, (hold_start, n)
 
 
-def bootstrap_mean(x: np.ndarray, n_boot: int = 2000, seed: int = 1) -> dict:
+def bootstrap_mean(x: np.ndarray, n_boot: int = 20000, seed: int = 1) -> dict:
     x = np.asarray(x, float)
     if len(x) < 2:
         return {"p_positive": 0.0, "ci05": float("nan"), "ci95": float("nan")}
@@ -82,7 +89,8 @@ def walk_forward(df: pd.DataFrame, spec: StrategySpec, market: MarketSpec, limit
         params = optimizer(df.iloc[:hs], spec, warmup)
     sig = spec.signals(df, params)
     hold = run_backtest(df, sig, market, limits, costs, start=hs, end=he)
-    stress = run_backtest(df, sig, market, limits, CostModel(**{**costs.__dict__, "stress_mult": gates.stress_cost_mult}), start=folds[0][1], end=he)
+    # stress test on the untouched holdout only (the final params were optimised on data before it)
+    stress = run_backtest(df, sig, market, limits, CostModel(**{**costs.__dict__, "stress_mult": gates.stress_cost_mult}), start=hs, end=he)
     rets = trades["ret_pct"].to_numpy() if len(trades) else np.array([])
     gp = trades.loc[trades.pnl > 0, "pnl"].sum() if len(trades) else 0.0
     gl = -trades.loc[trades.pnl <= 0, "pnl"].sum() if len(trades) else 0.0
@@ -95,7 +103,7 @@ def walk_forward(df: pd.DataFrame, spec: StrategySpec, market: MarketSpec, limit
         "oos_net_return_positive": (oos_ret > 0, round(oos_ret, 4)),
         "profit_factor": (pf >= gates.min_profit_factor, round(pf, 3) if np.isfinite(pf) else pf),
         "positive_folds": (pos_folds >= gates.min_positive_fold_frac, pos_folds),
-        "bootstrap_p_positive": (boot["p_positive"] >= gates.min_bootstrap_p_positive, round(boot["p_positive"], 3)),
+        "bootstrap_p_positive_bonferroni": (boot["p_positive"] >= gates.bootstrap_threshold, round(boot["p_positive"], 4)),
         "holdout_positive": (hold.metrics["net_return_pct"] > 0, round(hold.metrics["net_return_pct"], 4)),
         "stress_2x_costs_nonnegative": (stress.metrics["net_return_pct"] >= 0, round(stress.metrics["net_return_pct"], 4)),
     }
@@ -105,4 +113,5 @@ def walk_forward(df: pd.DataFrame, spec: StrategySpec, market: MarketSpec, limit
             "monte_carlo": monte_carlo_trades(rets, max(1, len(rets)), position_frac=limits.max_position_pct / 100),
             "holdout": hold.metrics, "stress": stress.metrics, "final_params": params,
             "gates": {k: {"pass": bool(v[0]), "value": v[1]} for k, v in checks.items()},
+            "bootstrap_threshold": gates.bootstrap_threshold,
             "verdict": "VALIDATED" if passed else "REJECTED"}

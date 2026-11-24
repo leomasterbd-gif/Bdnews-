@@ -50,12 +50,15 @@ DEFAULT_SETTINGS = {"language": "bn", "feed": "replay", "replay_dataset": "BTC_U
 def _owner_token() -> str:
     t = os.environ.get("ATM_OWNER_TOKEN")
     if t:
+        if len(t) < 16:
+            log.warning("ATM_OWNER_TOKEN is shorter than 16 characters; use secrets.token_urlsafe(32) in production")
         return t
     p = DATA / "owner_token"
     DATA.mkdir(exist_ok=True)
     if not p.exists():
-        p.write_text(new_token())
-        os.chmod(p, 0o600)
+        fd = os.open(p, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)  # created 0600, never world-readable
+        with os.fdopen(fd, "w") as fh:
+            fh.write(new_token())
     return p.read_text().strip()
 
 
@@ -96,7 +99,13 @@ class State:
 
     def eligible_strategy(self, dataset: str):
         """Only strategies that passed every validation gate on this dataset may trade."""
-        rows = [r for r in self.store.strategies("VALIDATED") if r["dataset"] == dataset and r["name"] in STRATEGIES]
+        # only the LATEST registry version of each (strategy, dataset) counts: a later rejection revokes eligibility
+        latest = {}
+        for r in self.store.strategies():
+            k = (r["name"], r["dataset"])
+            if k not in latest or r["version"] > latest[k]["version"]:
+                latest[k] = r
+        rows = [r for r in latest.values() if r["status"] == "VALIDATED" and r["dataset"] == dataset and r["name"] in STRATEGIES]
         if rows:
             r = max(rows, key=lambda x: x["metrics"].get("oos_return_pct", 0))
             return STRATEGIES[r["name"]], r["params"], "VALIDATED"
@@ -119,7 +128,8 @@ class State:
         df = load_ohlcv(ds)
         meta = DATASETS[ds]
         m = market_for(meta["symbol"], meta["quote"], float(df.close.iloc[-1]))
-        split = int(len(df) * 0.8)  # replay the holdout part only; history before it is warm-up
+        from ..research.cycle import FORWARD_FRAC
+        split = int(len(df) * (1 - FORWARD_FRAC))  # replay only the forward segment research never saw
         self.trader = PaperTrader(spec, params, m, self.limits, 100.0, history=df.iloc[split - 600:split], store=self.store)
         self.trader.strategy_status = status
         self.inactive_reason = ""
@@ -175,7 +185,12 @@ def create_app(state: State | None = None, start_background: bool = True) -> Fas
         if len(q) >= 5:
             raise HTTPException(429, "too many attempts; wait a minute")
         q.append(now)
-        body = await request.json()
+        try:
+            body = await request.json()
+        except Exception:  # noqa: BLE001
+            raise HTTPException(400, "invalid JSON") from None
+        if not isinstance(body, dict):
+            raise HTTPException(400, "invalid body")
         ok = token_matches(str(body.get("token", ""))[:200], token)
         st.store.audit("owner" if ok else "anonymous", "login_ok" if ok else "login_failed", {"ip": ip})
         if not ok:
@@ -348,7 +363,7 @@ def create_app(state: State | None = None, start_background: bool = True) -> Fas
 
     @app.get("/api/audit", dependencies=[Depends(auth)])
     def audit(limit: int = 200):
-        return {"entries": st.store.audit_tail(min(limit, 1000))}
+        return {"entries": st.store.audit_tail(max(1, min(limit, 1000)))}
 
     @app.get("/api/settings", dependencies=[Depends(auth)])
     def get_settings():
@@ -356,18 +371,28 @@ def create_app(state: State | None = None, start_background: bool = True) -> Fas
 
     @app.post("/api/settings", dependencies=[Depends(auth)])
     async def set_settings(request: Request):
-        body = await request.json()
+        try:
+            body = await request.json()
+        except Exception:  # noqa: BLE001
+            raise HTTPException(400, "invalid JSON") from None
+        if not isinstance(body, dict):
+            raise HTTPException(400, "invalid body")
         allowed = {"language": ("bn", "en"), "feed": ("replay",), "replay_dataset": tuple(DATASETS),
                    "shadow_strategy": (None, *STRATEGIES)}
-        for k, v in body.items():
-            if k == "replay_speed_s":
-                st.settings[k] = float(min(10, max(0.05, float(v))))
-            elif k == "telegram_owner_id":
-                st.settings[k] = int(v) if v not in (None, "") else None
-            elif k in allowed and v in allowed[k]:
-                st.settings[k] = v
-            else:
-                raise HTTPException(400, f"setting {k} not allowed")
+        new = {}
+        for k, v in body.items():  # validate everything first; apply atomically
+            try:
+                if k == "replay_speed_s":
+                    new[k] = float(min(10, max(0.05, float(v))))
+                elif k == "telegram_owner_id":
+                    new[k] = int(v) if v not in (None, "") else None
+                elif k in allowed and v in allowed[k]:
+                    new[k] = v
+                else:
+                    raise ValueError
+            except (TypeError, ValueError):
+                raise HTTPException(400, f"setting {k} not allowed") from None
+        st.settings.update(new)
         st.save_settings()
         st.store.audit("owner", "settings_change", body)
         return {"settings": st.settings}
@@ -388,8 +413,11 @@ def create_app(state: State | None = None, start_background: bool = True) -> Fas
 
     @app.post("/api/resume", dependencies=[Depends(auth)])
     async def resume(request: Request):
-        body = await request.json()
-        if body.get("confirm") != "RESUME":
+        try:
+            body = await request.json()
+        except Exception:  # noqa: BLE001
+            body = {}
+        if not isinstance(body, dict) or body.get("confirm") != "RESUME":
             raise HTTPException(400, "send {\"confirm\": \"RESUME\"}")
         KILL_FILE.unlink(missing_ok=True)
         if st.trader:

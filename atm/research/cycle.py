@@ -17,7 +17,7 @@ import pandas as pd
 
 from ..backtest.engine import run_backtest
 from ..backtest.execution import market_for
-from ..backtest.validation import walk_forward
+from ..backtest.validation import Gates, walk_forward
 from ..data.loader import DATASETS, load_ohlcv, quality_check, resample
 from ..ml.models import evaluate_ml
 from ..ml.rl import q_signals, train_q
@@ -57,6 +57,14 @@ def write_json(name: str, obj) -> Path:
     return p
 
 
+FORWARD_FRAC = 0.10  # final 10% of every dataset is never used by research; reserved for forward (replay) tests
+
+
+def research_slice(df):
+    """Data available to research (walk-forward + holdout). The last FORWARD_FRAC is untouched."""
+    return df.iloc[: int(len(df) * (1 - FORWARD_FRAC))]
+
+
 def load_market(name: str):
     df = load_ohlcv(name)
     meta = DATASETS[name]
@@ -64,20 +72,23 @@ def load_market(name: str):
 
 
 def _wf_job(args):
-    name, sname, optimise = args
+    name, sname, optimise, n_candidates = args
     df, market = load_market(name)
+    df = research_slice(df)
     limits = RiskLimits.load()
     spec = STRATEGIES[sname] if sname in STRATEGIES else PAIR_STRATEGY
     if sname == "pair_relative":
-        ref = load_ohlcv("ETH_BTC-5m" if name != "ETH_BTC-5m" else "LTC_BTC-5m")
+        ref = research_slice(load_ohlcv("ETH_BTC-5m" if name != "ETH_BTC-5m" else "LTC_BTC-5m"))
         df = df.join(ref.close.rename("ref_close"), how="inner")
     opt = optm.genetic_optimizer(market, limits) if optimise and spec.space else None
     t = time.time()
-    res = walk_forward(df, spec, market, limits, optimizer=opt)
+    n_before = len(optm.TRIALS_LOG)  # worker processes are reused: count only this job's trials
+    res = walk_forward(df, spec, market, limits, optimizer=opt, gates=Gates(n_candidates=n_candidates))
     res["dataset"] = name
     res["optimised"] = bool(opt)
     res["seconds"] = round(time.time() - t, 1)
-    res["trials"] = sum(x["trials"] for x in optm.TRIALS_LOG)
+    res["trials"] = sum(x["trials"] for x in optm.TRIALS_LOG[n_before:])
+    res["optimizer_errors"] = optm.ERRORS["count"]
     return res
 
 
@@ -107,9 +118,10 @@ def rl_experiment(limits: RiskLimits) -> dict:
     out = {}
     for name in PRIMARY + ["ETH_BTC-5m"]:
         df, market = load_market(name)
+        df = research_slice(df)
         split = int(len(df) * 0.6)
         Q = train_q(df, split)
-        r = run_backtest(df, q_signals(df, Q), market, limits, start=split)
+        r = run_backtest(df, q_signals(df, Q, split), market, limits, start=split)
         out[name] = {"train_bars": split, "oos": r.metrics, "verdict": "CANDIDATE" if r.metrics["net_return_pct"] > 0 and r.metrics["trades"] >= 10 else "REJECTED"}
     return out
 
@@ -124,8 +136,10 @@ def run_cycle(workers: int = 4, optimise: bool = True, store: Store | None = Non
     dq = data_quality()
     write_json("data_quality.json", dq)
 
-    jobs = [(d, s, optimise) for d in PRIMARY + SECONDARY for s in STRATEGIES]
-    jobs += [(d, "pair_relative", optimise) for d in ["LTC_BTC-5m", "DASH_BTC-5m", "XMR_BTC-5m"]]
+    pairs = ["LTC_BTC-5m", "DASH_BTC-5m", "XMR_BTC-5m"]
+    n_cand = len(PRIMARY + SECONDARY) * len(STRATEGIES) + len(pairs)
+    jobs = [(d, s, optimise, n_cand) for d in PRIMARY + SECONDARY for s in STRATEGIES]
+    jobs += [(d, "pair_relative", optimise, n_cand) for d in pairs]
     with ProcessPoolExecutor(max_workers=workers) as ex:
         wf = list(ex.map(_wf_job, jobs))
     for r in wf:
@@ -138,7 +152,10 @@ def run_cycle(workers: int = 4, optimise: bool = True, store: Store | None = Non
     write_json("walk_forward.json", wf)
     total_trials = sum(r.get("trials", 0) for r in wf) + len(wf)
 
-    ml = {name: evaluate_ml(*load_market(name), limits) for name in PRIMARY + ["ETH_BTC-5m"]}
+    ml = {}
+    for name in PRIMARY + ["ETH_BTC-5m"]:
+        df, m = load_market(name)
+        ml[name] = evaluate_ml(research_slice(df), m, limits)
     for name, res in ml.items():
         for m, s in res["models"].items():
             store.experiment("ml", f"{m} beats baselines on {name}", {"horizon": res["horizon"]},
@@ -156,8 +173,10 @@ def run_cycle(workers: int = 4, optimise: bool = True, store: Store | None = Non
     validated = [r for r in wf if r["verdict"] == "VALIDATED" and r["strategy"] in STRATEGIES]
     for r in validated:
         strats[f"{r['strategy']}@validated:{r['dataset']}"] = (STRATEGIES[r["strategy"]], r["final_params"])
-    ch = run_challenge(datasets, strats, limits)
-    best = max(ch["summary"].items(), key=lambda kv: kv[1]["mean_return_pct"])
+    fwd_start = {n: int(len(df) * (1 - FORWARD_FRAC)) for n, (df, _) in datasets.items()}
+    ch = run_challenge(datasets, strats, limits, min_start={k: fwd_start for k in strats if "@validated" in k})
+    traded = {k: v for k, v in ch["summary"].items() if v["prob_no_trade_pct"] < 100}
+    best = max(traded.items() or ch["summary"].items(), key=lambda kv: kv[1]["mean_return_pct"])
     ch["best_by_mean"] = best[0]
     ch["doubling_analysis"] = sessions_to_double(np.array([x["ret_pct"] for x in ch["sessions_detail"][best[0]]]))
     detail = ch.pop("sessions_detail")
@@ -171,6 +190,8 @@ def run_cycle(workers: int = 4, optimise: bool = True, store: Store | None = Non
         finished=pd.Timestamp.utcnow().isoformat(), seconds=round(time.time() - t0, 1),
         walk_forward_runs=len(wf), validated=[(r["strategy"], r["dataset"]) for r in wf if r["verdict"] == "VALIDATED"],
         total_backtest_trials=total_trials,
+        bonferroni_bootstrap_threshold=Gates(n_candidates=n_cand).bootstrap_threshold,
+        forward_reserved_frac=FORWARD_FRAC,
         ml_candidates=[(n, m) for n, res in ml.items() for m, s in res["models"].items() if s["verdict"] == "CANDIDATE"],
         rl_candidates=[n for n, r in rl.items() if r["verdict"] == "CANDIDATE"],
         challenge_best=best[0], challenge_best_hit_rate=best[1]["target_hit_rate_pct"],

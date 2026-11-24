@@ -157,3 +157,42 @@ def test_challenge_windows_non_overlapping(btc):
     w = windows(btc)
     assert all(e - s == 48 for s, e in w)
     assert all(w[i][1] <= w[i + 1][0] for i in range(len(w) - 1))
+
+
+# ---- regression tests for the independent audit findings ----
+def test_partial_exits_merge_and_equity_reconciles(limits):
+    """Audit #4/#5: thin volume forces partial sells; fees must not be double counted and the
+    trade list must reconcile exactly with the equity change."""
+    close = [100.0] * 5 + [101, 102, 103, 104, 105] + [105] * 10
+    df = make_df(close, vol=0.06, spread=0.0)  # 5% participation of 0.06 -> 0.003 units per bar
+    cm = CostModel(taker_fee=0.001, slippage_bps=0, range_slip_frac=0, latency_bps=0, reject_prob=0, network_fail_prob=0)
+    r = run_backtest(df, sig(df, [1], [8], stop=2), M0, limits, cm)
+    assert r.metrics["final_equity"] - 100 == pytest.approx(r.trades.pnl.sum(), abs=1e-9)
+    assert len(r.trades) <= 2
+
+
+def test_end_of_test_remainder_not_dropped(limits):
+    close = [100.0] * 4 + [101.0] * 4
+    df = make_df(close, vol=0.06, spread=0.0)
+    r = run_backtest(df, sig(df, [1], [], stop=2), M0, limits, NOFRICTION)
+    assert r.metrics["final_equity"] > 99.9
+
+
+def test_session_loss_halt_resets_every_4h(limits):
+    """Audit #3: a session-loss halt must not freeze trading for the rest of a multi-day backtest."""
+    n = 48 * 3
+    close = np.r_[np.full(10, 100.0), np.full(n - 10, 90.0)]
+    df = make_df(close, spread=0.0)
+    entries = list(range(1, n - 2, 3))
+    r = run_backtest(df, sig(df, entries, [e + 1 for e in entries], stop=0.5), M0, limits, NOFRICTION)
+    late = r.trades[r.trades.entry_ts > df.index[60]]
+    assert len(late) > 0
+
+
+def test_oracle_intrabar_is_upper_bound():
+    from atm.research.challenge import ohlc_path
+    rng = np.random.default_rng(0)
+    c = 100 * np.exp(np.cumsum(rng.normal(0, 0.01, 30)))
+    o = np.r_[c[0], c[:-1]]
+    h, l = np.maximum(o, c) * 1.003, np.minimum(o, c) * 0.997
+    assert oracle_long_only(ohlc_path(o, h, l, c)) >= oracle_long_only(c)

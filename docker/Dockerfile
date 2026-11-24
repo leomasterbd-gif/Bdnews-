@@ -14,4 +14,4 @@ RUN mkdir -p /app/reports /app/data && chown -R atm:atm /app/reports /app/data
 USER atm
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/health',timeout=4).status==200 else 1)"
-CMD ["python", "-m", "uvicorn", "--factory", "atm.api.server:create_app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
+CMD ["python", "-m", "uvicorn", "--factory", "atm.api.server:create_app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]

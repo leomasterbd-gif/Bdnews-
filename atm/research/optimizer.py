@@ -13,6 +13,7 @@ from ..risk.limits import RiskLimits
 from ..strategies.library import StrategySpec
 
 TRIALS_LOG: list[dict] = []
+ERRORS = {"count": 0, "last": ""}
 
 
 def objective(m: dict, min_trades: int = 8) -> float:
@@ -43,7 +44,9 @@ def _evaluate(df, spec, params, market, limits, costs, start):
     try:
         sig = spec.signals(df, params)
         return objective(run_backtest(df, sig, market, limits, costs, start=start).metrics)
-    except Exception:
+    except Exception as e:  # noqa: BLE001 - a crashing parameter set scores worst, but is counted and reported
+        ERRORS["count"] += 1
+        ERRORS["last"] = f"{spec.name}: {e.__class__.__name__}: {e}"[:300]
         return -1e6
 
 

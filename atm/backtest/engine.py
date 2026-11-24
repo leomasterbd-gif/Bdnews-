@@ -4,7 +4,10 @@ Timing contract (prevents look-ahead):
   * signals and risk context are taken from bar t-1 (fully closed),
   * orders fill at bar t open through the ExecutionSimulator,
   * protective stops / take-profits are evaluated against bar t high/low; if both
-    could have triggered in the same bar the stop is assumed (pessimistic).
+    could have triggered in the same bar the stop is assumed (pessimistic),
+  * liquidity caps and slippage use the previous closed bar's volume/range (known at decision time),
+  * the risk session (session-loss limit) resets every `session_hours` (4h), matching deployment,
+  * partial fills of one position are merged into a single logical trade.
 """
 from __future__ import annotations
 
@@ -36,7 +39,8 @@ def _bars_per_year(index: pd.DatetimeIndex) -> float:
 
 def run_backtest(df: pd.DataFrame, sig: pd.DataFrame, market: MarketSpec, limits: RiskLimits,
                  costs: CostModel = CostModel(), capital_usd: float = 100.0,
-                 start: int | None = None, end: int | None = None, seed: int = 7) -> BacktestResult:
+                 start: int | None = None, end: int | None = None, seed: int = 7,
+                 session_hours: float = 4.0) -> BacktestResult:
     o, h, l, c, v = (df[k].to_numpy(float) for k in ("open", "high", "low", "close", "volume"))
     idx = df.index
     entry, exit_ = sig["entry"].to_numpy(bool), sig["exit"].to_numpy(bool)
@@ -51,35 +55,56 @@ def run_backtest(df: pd.DataFrame, sig: pd.DataFrame, market: MarketSpec, limits
     capital = capital_usd / market.usd_per_quote
     cash, qty = capital, 0.0
     entry_px = stop_px = tp_px = np.nan
-    entry_i, entry_fee, entry_slip = -1, 0.0, 0.0
+    entry_i = -1
+    # remaining (not yet allocated) entry costs + accumulators for the current logical trade
+    rem_fee = rem_slip = 0.0
+    pos = {"pnl": 0.0, "fees": 0.0, "slip": 0.0, "cost": 0.0, "qty": 0.0, "proceeds_px_qty": 0.0}
     risk = RiskEngine(limits, capital)
     risk.start_session(capital)
+    session_bars = max(1, int(pd.Timedelta(hours=session_hours) / pd.Series(idx).diff().median()))
     ex = ExecutionSimulator(market, costs, seed)
     trades, rej = [], {}
     eq = np.empty(end - start)
     usd_liq_scale = market.usd_per_quote
 
-    def close_pos(i, px_ref, reason, forced=True):
-        nonlocal cash, qty
-        f = ex.fill("sell", qty, px_ref, h[i], l[i], v[i], forced=forced)
+    def close_pos(i, px_ref, reason, forced=True, ignore_liquidity=False):
+        """Sell (part of) the position. Liquidity/slippage use the previous closed bar (j=i-1)."""
+        nonlocal cash, qty, rem_fee, rem_slip
+        j = max(i - 1, 0)
+        f = ex.fill("sell", qty, px_ref, h[j], l[j], v[j], forced=forced, ignore_liquidity=ignore_liquidity)
         if not f.ok:
             rej[f.reason] = rej.get(f.reason, 0) + 1
             return False
+        frac = f.qty / qty
+        fee_alloc, slip_alloc = rem_fee * frac, rem_slip * frac
+        rem_fee -= fee_alloc
+        rem_slip -= slip_alloc
         proceeds = f.qty * f.price - f.fee
-        cost_basis = f.qty * entry_px + entry_fee * (f.qty / qty)
-        pnl = proceeds - cost_basis
-        trades.append(dict(entry_ts=idx[entry_i], exit_ts=idx[i], entry_px=entry_px, exit_px=f.price, qty=f.qty,
-                           pnl=pnl, ret_pct=100 * pnl / cost_basis, fees=f.fee + entry_fee * (f.qty / qty),
-                           slippage=f.slippage_cost + entry_slip * (f.qty / qty), bars=i - entry_i + 1, reason=reason))
+        cost_basis = f.qty * entry_px + fee_alloc
+        pos["pnl"] += proceeds - cost_basis
+        pos["fees"] += f.fee + fee_alloc
+        pos["slip"] += f.slippage_cost + slip_alloc
+        pos["cost"] += cost_basis
+        pos["qty"] += f.qty
+        pos["proceeds_px_qty"] += f.qty * f.price
         cash += proceeds
         qty -= f.qty
-        if qty * px_ref < 1e-12 or qty < market.step_size:
+        if qty < market.step_size or qty * px_ref < 1e-12:
+            cash += qty * px_ref if qty > 0 else 0.0  # dust below step size is valued at the reference price
             qty = 0.0
-        risk.on_trade_closed(pnl)
+        if qty == 0.0:  # one logical trade per position, however many fill slices it took
+            trades.append(dict(entry_ts=idx[entry_i], exit_ts=idx[i], entry_px=entry_px, exit_px=pos["proceeds_px_qty"] / pos["qty"],
+                               qty=pos["qty"], pnl=pos["pnl"], ret_pct=100 * pos["pnl"] / pos["cost"], fees=pos["fees"],
+                               slippage=pos["slip"], bars=i - entry_i, reason=reason))
+            risk.on_trade_closed(pos["pnl"])
+            for key in pos:
+                pos[key] = 0.0
         return True
 
     for k, i in enumerate(range(start, end)):
         j = i - 1
+        if k and k % session_bars == 0:   # 4-hour session boundary: new session-loss baseline
+            risk.start_session(cash + qty * c[j])
         # 1) orders decided at close of bar j, executed at open of bar i
         if qty > 0 and (exit_[j] or risk.must_flatten):
             close_pos(i, o[i], "kill/halt" if risk.must_flatten else "signal_exit", forced=risk.must_flatten)
@@ -95,12 +120,12 @@ def run_backtest(df: pd.DataFrame, sig: pd.DataFrame, market: MarketSpec, limits
                     key = r.split(" ")[0]
                     rej[key] = rej.get(key, 0) + 1
             else:
-                f = ex.fill("buy", d.qty, o[i], h[i], l[i], v[i])
+                f = ex.fill("buy", d.qty, o[i], h[j], l[j], v[j])
                 if not f.ok:
                     rej[f.reason] = rej.get(f.reason, 0) + 1
                 elif f.qty * f.price + f.fee <= cash:
                     cash -= f.qty * f.price + f.fee
-                    qty, entry_px, entry_i, entry_fee, entry_slip = f.qty, f.price, i, f.fee, f.slippage_cost
+                    qty, entry_px, entry_i, rem_fee, rem_slip = f.qty, f.price, i, f.fee, f.slippage_cost
                     stop_px = f.price - stop_d[j]
                     tp_px = f.price + tp_d[j] if np.isfinite(tp_d[j]) else np.nan
                 else:
@@ -117,8 +142,9 @@ def run_backtest(df: pd.DataFrame, sig: pd.DataFrame, market: MarketSpec, limits
         risk.on_bar(idx[i], equity)
 
     if qty > 0:
-        close_pos(end - 1, c[end - 1], "end_of_test")
-        eq[-1] = cash
+        # accounting liquidation at the final close (liquidity cap waived so no position is silently dropped)
+        close_pos(end - 1, c[end - 1], "end_of_test", ignore_liquidity=True)
+        eq[-1] = cash + qty * c[end - 1]
     equity_s = pd.Series(eq, index=idx[start:end])
     tdf = pd.DataFrame(trades, columns=["entry_ts", "exit_ts", "entry_px", "exit_px", "qty", "pnl", "ret_pct",
                                         "fees", "slippage", "bars", "reason"])

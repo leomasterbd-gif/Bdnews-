@@ -56,18 +56,25 @@ class PaperTrader:
     # --------------------------------------------------------------
     def _fill(self, side, qty, ref, bar: Bar, forced=False):
         if self.mode == "testnet":
+            from ..backtest.execution import round_step
+            qty = round_step(qty, self.m.step_size)
+            if qty <= 0 or (qty * ref < self.m.min_notional and not forced):
+                return False, 0.0, ref, 0.0
             cid = f"atm{uuid.uuid4().hex[:16]}"
             r = self.testnet.new_order(self.m.symbol, side, qty, client_id=cid)
             fills = r.get("fills", [])
             q = float(r.get("executedQty", 0))
             px = (sum(float(f["price"]) * float(f["qty"]) for f in fills) / q) if q else ref
-            fee = sum(float(f.get("commission", 0)) for f in fills if f.get("commissionAsset") == self.m.quote)
-            return q > 0, q, px, fee or q * px * 0.001
+            base = self.m.symbol[: -len(self.m.quote)]
+            fee_quote = sum(float(f.get("commission", 0)) for f in fills if f.get("commissionAsset") == self.m.quote)
+            fee_base = sum(float(f.get("commission", 0)) for f in fills if f.get("commissionAsset") == base)
+            q_net = q - fee_base if side == "buy" else q  # commission in base asset reduces what we hold
+            return q > 0, q_net, px, fee_quote + fee_base * px
         f = self.ex.fill(side, qty, ref, bar.high, bar.low, bar.volume, forced=forced)
         return f.ok, f.qty, f.price, f.fee
 
     def on_bar(self, bar: Bar) -> None:
-        if not bar.closed or not self.running:
+        if not bar.closed or (not self.running and not self.pending):
             return
         with self.lock:
             self.source = bar.source
@@ -78,11 +85,16 @@ class PaperTrader:
                 p, self.pending = self.pending, None
                 if p["side"] == "sell" and self.qty > 0:
                     self._close(bar.open, bar, p["reason"], forced=p.get("forced", False))
-                elif p["side"] == "buy" and self.qty == 0:
-                    ok, q, px, fee = self._fill("buy", p["qty"], bar.open, bar)
+                elif p["side"] == "buy" and self.qty == 0 and self.running and not self.risk.must_flatten:
+                    try:
+                        ok, q, px, fee = self._fill("buy", p["qty"], bar.open, bar)
+                    except Exception as e:  # noqa: BLE001 - exchange errors must not kill the feed thread
+                        self._log(f"entry failed: {e.__class__.__name__}")
+                        ok = False
                     if ok and q * px + fee <= self.cash:
                         self.cash -= q * px + fee
                         self.qty, self.entry_px, self.entry_fee = q, px, fee
+                        self.pos_pnl = 0.0
                         self.stop_px = px - p["stop_dist"]
                         self.tp_px = px + p["tp_dist"] if np.isfinite(p["tp_dist"]) else np.nan
                         self._record("BUY", q, px, fee, bar)
@@ -91,6 +103,8 @@ class PaperTrader:
                 self._close(min(self.stop_px, bar.open), bar, "stop_loss", forced=True)
             elif self.qty > 0 and np.isfinite(self.tp_px) and bar.high >= self.tp_px:
                 self._close(max(self.tp_px, bar.open), bar, "take_profit", forced=True)
+            if not self.running:  # session already ended: only the pending exit was processed
+                return
             # append bar, recompute signal on closed history
             self.bars.loc[bar.ts] = [bar.open, bar.high, bar.low, bar.close, bar.volume]
             self.bars = self.bars.iloc[-3000:]
@@ -105,14 +119,26 @@ class PaperTrader:
                 return
             if len(self.bars) < 120:
                 return
+            if self.risk.must_flatten:
+                if self.qty > 0:
+                    self.pending = {"side": "sell", "reason": "kill/halt", "forced": True}
+                return
             sig = self.spec.signals(self.bars.astype(float), self.params).iloc[-1]
             if self.qty > 0 and (sig["exit"] or self.risk.must_flatten):
                 self.pending = {"side": "sell", "reason": "kill/halt" if self.risk.must_flatten else "signal_exit", "forced": self.risk.must_flatten}
             elif self.qty == 0 and sig["entry"] and np.isfinite(sig["stop_dist"]) and sig["stop_dist"] > 0:
-                atr_pct = float(100 * ind.atr(self.bars.astype(float), 14).iloc[-1] / bar.close)
+                b = self.bars.astype(float)
+                atr_pct = float(100 * ind.atr(b, 14).iloc[-1] / bar.close)
+                lr = np.log(b.close).diff()
+                sd = lr.iloc[-289:-1].std()
+                abnormal = bool(np.isfinite(sd) and sd > 0 and abs(lr.iloc[-1]) > 6 * sd)
+                # live feeds: age of the bar close vs wall clock; replay: 0 by construction
+                step = b.index[-1] - b.index[-2]
+                age = 0.0 if bar.source == "REPLAY" else max(0.0, time.time() - (bar.ts + step).timestamp())
                 ctx = EntryContext(ts=bar.ts, equity=eq, cash=self.cash, price=bar.close, stop_price=bar.close - sig["stop_dist"],
                                    atr_pct=atr_pct, bar_quote_volume=bar.volume * bar.close * self.m.usd_per_quote,
-                                   spread_bps=2 * self.m.half_spread_bps, data_age_s=0.0, min_notional=self.m.min_notional)
+                                   spread_bps=2 * self.m.half_spread_bps, data_age_s=age, min_notional=self.m.min_notional,
+                                   abnormal_market=abnormal)
                 d = self.risk.check_entry(ctx)
                 if d.approved:
                     self.pending = {"side": "buy", "qty": d.qty, "stop_dist": float(sig["stop_dist"]), "tp_dist": float(sig.get("tp_dist", np.nan))}
@@ -121,17 +147,28 @@ class PaperTrader:
                     self._log("entry rejected by risk engine: " + "; ".join(d.reasons))
 
     def _close(self, ref, bar, reason, forced=True):
-        ok, q, px, fee = self._fill("sell", self.qty, ref, bar, forced=forced)
+        try:
+            ok, q, px, fee = self._fill("sell", self.qty, ref, bar, forced=forced)
+        except Exception as e:  # noqa: BLE001
+            ok = False
+            self._log(f"exit error {e.__class__.__name__}")
         if not ok:
-            self._log(f"exit failed ({reason}); will retry")
+            self._log(f"exit failed ({reason}); will retry next bar")
             self.pending = {"side": "sell", "reason": reason, "forced": True}
             return
-        pnl = q * px - fee - q * self.entry_px - self.entry_fee * (q / self.qty)
+        fee_alloc = self.entry_fee * (q / self.qty)
+        self.entry_fee -= fee_alloc  # remaining entry fee belongs to the unsold remainder
+        pnl = q * px - fee - q * self.entry_px - fee_alloc
         self.cash += q * px - fee
         self.qty -= q
+        self.pos_pnl = getattr(self, "pos_pnl", 0.0) + pnl
         if self.qty < self.m.step_size:
             self.qty = 0.0
-        self.risk.on_trade_closed(pnl)
+        if self.qty == 0.0:  # one logical trade for the risk engine
+            self.risk.on_trade_closed(self.pos_pnl)
+            self.pos_pnl = 0.0
+        else:
+            self.pending = {"side": "sell", "reason": reason + "_remainder", "forced": True}
         self._record("SELL", q, px, fee, bar, pnl, reason)
 
     def _record(self, side, q, px, fee, bar, pnl=None, reason=""):
@@ -149,6 +186,8 @@ class PaperTrader:
     def emergency_stop(self, reason="owner emergency stop"):
         with self.lock:
             self.risk.emergency_stop(reason)
+            if self.pending and self.pending.get("side") == "buy":
+                self.pending = None  # never let an approved-but-unfilled entry survive a stop
             if self.qty > 0:
                 self.pending = {"side": "sell", "reason": "emergency_stop", "forced": True}
             self._log(f"EMERGENCY STOP: {reason}")

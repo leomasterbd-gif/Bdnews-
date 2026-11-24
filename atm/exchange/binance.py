@@ -153,14 +153,20 @@ class SpotTestnetClient(_Base):
     """Signed Spot Testnet client. Production hosts are refused unconditionally."""
 
     def __init__(self, api_key: str | None = None, api_secret: str | None = None, base: str = TESTNET_BASE, recv_window: int = 5000, **kw):
-        host = urllib.parse.urlparse(base).hostname or ""
-        if host != "testnet.binance.vision" or host in FORBIDDEN_HOSTS:
+        u = urllib.parse.urlparse(base)
+        host = u.hostname or ""
+        if u.scheme != "https" or host != "testnet.binance.vision" or u.username or u.password or host in FORBIDDEN_HOSTS:
             raise ExchangeError("SpotTestnetClient refuses non-testnet hosts; real-money trading is disabled")
         super().__init__(base, **kw)
         self._key = api_key if api_key is not None else get_secret("BINANCE_TESTNET_API_KEY")
         self._secret = api_secret if api_secret is not None else get_secret("BINANCE_TESTNET_API_SECRET")
         self.recv_window = recv_window
         self.time_offset = 0
+
+    def __setattr__(self, name, value):
+        if name == "base" and "base" in self.__dict__:
+            raise ExchangeError("base URL is immutable")
+        super().__setattr__(name, value)
 
     def __repr__(self) -> str:  # never print credentials
         return f"SpotTestnetClient(base={self.base!r}, credentials={'set' if self._key else 'missing'})"

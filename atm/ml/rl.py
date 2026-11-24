@@ -10,19 +10,21 @@ import pandas as pd
 from ..features import indicators as ind
 
 
-def _states(df: pd.DataFrame) -> np.ndarray:
+def _states(df: pd.DataFrame, fit_end: int | None = None) -> np.ndarray:
+    """Volatility bins are fitted on df[:fit_end] only (training data) to avoid leakage."""
     r = ind.rsi(df.close, 14)
     g = (ind.ema(df.close, 20) - ind.ema(df.close, 100)) / df.close
     v = ind.realized_vol(df.close, 24)
+    vt = v.iloc[:fit_end] if fit_end else v
     rb = np.digitize(r.fillna(50), [30, 45, 55, 70])
     gb = np.digitize(g.fillna(0), [-0.004, 0, 0.004])
-    vb = np.digitize(v.fillna(v.median()), [v.quantile(0.33), v.quantile(0.66)])
+    vb = np.digitize(v.fillna(vt.median()), [vt.quantile(0.33), vt.quantile(0.66)])
     return (rb * 4 + gb) * 3 + vb  # 5*4*3 = 60 states
 
 
 def train_q(df: pd.DataFrame, train_end: int, fee: float = 0.001, episodes: int = 30, alpha=0.05, gamma=0.95, eps=0.1, seed=0):
     rng = np.random.default_rng(seed)
-    s = _states(df)
+    s = _states(df, train_end)
     lr = np.log(df.close).diff().shift(-1).fillna(0).to_numpy()  # reward for holding from t to t+1
     Q = np.zeros((60, 2, 2))  # state, position(0/1), action(0 flat / 1 long)
     for _ in range(episodes):
@@ -36,8 +38,8 @@ def train_q(df: pd.DataFrame, train_end: int, fee: float = 0.001, episodes: int 
     return Q
 
 
-def q_signals(df: pd.DataFrame, Q: np.ndarray, atr_stop: float = 2.0) -> pd.DataFrame:
-    s = _states(df)
+def q_signals(df: pd.DataFrame, Q: np.ndarray, train_end: int, atr_stop: float = 2.0) -> pd.DataFrame:
+    s = _states(df, train_end)
     want_long = np.array([Q[st, 0, 1] > Q[st, 0, 0] for st in s])
     hold_long = np.array([Q[st, 1, 1] > Q[st, 1, 0] for st in s])
     at = ind.atr(df, 14)

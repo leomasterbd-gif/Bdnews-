@@ -132,7 +132,8 @@ class TelegramBot:
         msg = update.get("message") or {}
         uid = (msg.get("from") or {}).get("id")
         text = msg.get("text") or ""
-        if uid != self.owner_id:
+        chat_id = (msg.get("chat") or {}).get("id")
+        if uid != self.owner_id or chat_id != self.owner_id:  # private chat with the owner only (no groups)
             if self.store:
                 self.store.audit("telegram", "unauthorized_message", {"user_id": uid})
             return None  # silently ignore non-owners

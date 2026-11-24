@@ -126,6 +126,7 @@
       telegram_ph: 'সংখ্যাসূচক আইডি (ঐচ্ছিক)', lang_bn: 'বাংলা', lang_en: 'English',
       b_virtual_t: 'ভার্চুয়াল অর্থ — কোনো আসল টাকা নয়', b_hist_t: 'সংরক্ষিত ঐতিহাসিক ডেটা — লাইভ নয়', b_replay_t: 'ঐতিহাসিক বার পুনরায় চালানো হচ্ছে',
       b_shadow_t: 'যাচাই-না-হওয়া পরীক্ষামূলক স্ট্র্যাটেজি', b_blocked_t: 'অনুপলব্ধ / আটকানো', b_research_t: 'রিসার্চ চক্রের ফলাফল',
+      h_gain: 'লাভ', h_zero: '০% সহ বিন (ট্রেডহীন সেশনসহ)', h_loss: 'ক্ষতি',
       unknown: 'অজানা', count: 'সংখ্যা', value: 'মান', name: 'নাম', on: 'চালু',
     },
     en: {
@@ -248,6 +249,7 @@
       telegram_ph: 'Numeric ID (optional)', lang_bn: 'বাংলা', lang_en: 'English',
       b_virtual_t: 'Virtual money — no real funds', b_hist_t: 'Stored historical data — not live', b_replay_t: 'Historical bars being replayed',
       b_shadow_t: 'Unvalidated experimental strategy', b_blocked_t: 'Unavailable / blocked', b_research_t: 'Research cycle output',
+      h_gain: 'Gain', h_zero: 'Bin containing 0% (incl. no-trade sessions)', h_loss: 'Loss',
       unknown: 'Unknown', count: 'Count', value: 'Value', name: 'Name', on: 'On',
     },
   };
@@ -684,6 +686,7 @@
     for (let v = Math.ceil(lo / step) * step; v <= hi + step * 1e-9; v += step) out.push(+v.toPrecision(12));
     return out;
   }
+  function stepDecimals(ticks) { const st = ticks.length > 1 ? Math.abs(ticks[1] - ticks[0]) : 1; return Math.max(0, Math.min(6, -Math.floor(Math.log10(st) + 1e-9))); }
   function makeChart(height, draw, opts) {
     opts = opts || {};
     const wrap = el('div', { class: 'chart', style: 'height:' + height + 'px', role: 'img', 'aria-label': opts.label || '' });
@@ -920,12 +923,13 @@
       for (let b = 0; b < nb; b++) {
         if (!counts[b]) continue;
         const a = lo + b * bw, mid = a + bw / 2;
-        ctx.fillStyle = mid >= 0 ? 'rgba(34,197,94,0.75)' : 'rgba(239,68,68,0.75)';
+        ctx.fillStyle = (a <= 0 && a + bw > 0) ? 'rgba(169,182,204,0.6)' : mid > 0 ? 'rgba(34,197,94,0.75)' : 'rgba(239,68,68,0.75)';
         const x0 = x(a) + 1, x1 = x(a + bw) - 1;
         roundRect(ctx, x0, y(counts[b]), Math.max(1, x1 - x0), padT + ph - y(counts[b]), Math.min(3, (x1 - x0) / 2)); ctx.fill();
       }
       ctx.fillStyle = C.axis; ctx.textAlign = 'center';
-      niceTicks(lo, hi, Math.max(3, Math.floor(pw / 80))).forEach((v) => ctx.fillText(fmtN(v, Math.abs(hi - lo) < 5 ? 1 : 0) + (opts.unit || ''), x(v), h - padB / 2 + 2));
+      const xT = niceTicks(lo, hi, Math.max(3, Math.floor(pw / 80))), xDec = stepDecimals(xT);
+      xT.forEach((v) => ctx.fillText(fmtN(v, xDec) + (opts.unit || ''), x(v), h - padB / 2 + 2));
       (opts.markers || []).forEach((m) => {
         if (!isNum(m.v)) return;
         const inRange = m.v >= lo && m.v <= hi;
@@ -954,16 +958,17 @@
       let maxLab = 0; items.forEach((it) => { maxLab = Math.max(maxLab, ctx.measureText(it.label).width); });
       const padL = Math.min(Math.max(70, maxLab + 14), w * 0.42), padR = 64, padT = 6, padB = 24;
       const pw = w - padL - padR;
-      let lo = 0, hi = 0; items.forEach((it) => { if (isNum(it.value)) { lo = Math.min(lo, it.value); hi = Math.max(hi, it.value); } });
+      let lo = isNum(opts.base) ? opts.base : 0, hi = lo; items.forEach((it) => { if (isNum(it.value)) { lo = Math.min(lo, it.value); hi = Math.max(hi, it.value); } });
       if (isNum(opts.ref)) { lo = Math.min(lo, opts.ref); hi = Math.max(hi, opts.ref); }
       if (opts.min != null) lo = Math.min(lo, opts.min);
       if (opts.max != null) hi = Math.max(hi, opts.max);
       if (lo === hi) hi = lo + 1;
       const x = (v) => padL + (v - lo) / (hi - lo) * pw;
       ctx.strokeStyle = C.grid; ctx.fillStyle = C.axis; ctx.textAlign = 'center';
-      niceTicks(lo, hi, Math.max(2, Math.floor(pw / 90))).forEach((v) => {
+      const hT = niceTicks(lo, hi, Math.max(2, Math.floor(pw / 90))), hDec = stepDecimals(hT);
+      hT.forEach((v) => {
         ctx.beginPath(); ctx.moveTo(x(v) + 0.5, padT); ctx.lineTo(x(v) + 0.5, h - padB); ctx.stroke();
-        ctx.fillText((opts.fmtTick || ((q) => fmtN(q, Math.abs(hi - lo) < 3 ? 2 : 0)))(v), x(v), h - padB / 2 + 2);
+        ctx.fillText((opts.fmtTick || ((q) => fmtN(q, hDec)))(v), x(v), h - padB / 2 + 2);
       });
       const base = isNum(opts.base) ? opts.base : 0;
       items.forEach((it, i) => {
@@ -1690,6 +1695,7 @@
           el('span', { class: 'chip' }, t('mean') + ': ', el('b', { class: sgn(s.mean_return_pct) }, fmtPct(s.mean_return_pct, 3))),
           el('span', { class: 'chip' }, t('best') + ': ', el('b', null, fmtPct(s.best_return_pct))),
           el('span', { class: 'chip' }, t('target') + ': ', el('b', { class: 'warn' }, fmtPct(ch.target_pct)))),
+        legend([[t('h_gain'), 'rgba(34,197,94,0.75)', true], [t('h_zero'), 'rgba(169,182,204,0.6)', true], [t('h_loss'), 'rgba(239,68,68,0.75)', true]]),
         histogram(vals, { unit: '%', markers: [{ v: 0, label: '0%', color: 'rgba(230,237,247,.6)' }, { v: ch.target_pct, label: t('target_line') + ' ' + fmtPct(ch.target_pct, 0), color: C.amber }], label: 'session return histogram' }));
     }
     const histPanel = panel(t('session_hist'), {

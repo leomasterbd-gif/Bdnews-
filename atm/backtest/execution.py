@@ -79,7 +79,7 @@ class ExecutionSimulator:
         self.rng = np.random.default_rng(seed)
 
     def fill(self, side: str, qty: float, ref_price: float, bar_high: float, bar_low: float,
-             bar_volume: float, forced: bool = False) -> Fill:
+             bar_volume: float, forced: bool = False, ignore_liquidity: bool = False) -> Fill:
         """Market order at ref_price (next bar open). `forced` exits (stops/kill) are never randomly rejected
         but may be delayed by the caller on network failure."""
         m, c = self.m, self.c
@@ -91,7 +91,7 @@ class ExecutionSimulator:
                 return Fill(False, reason="exchange_reject")
         max_qty = c.max_participation * bar_volume if bar_volume > 0 else 0.0
         partial = False
-        if qty > max_qty:
+        if qty > max_qty and not ignore_liquidity:
             qty, partial = max_qty, True
         qty = round_step(qty, m.step_size)
         if qty <= 0:

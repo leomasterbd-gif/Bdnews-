@@ -136,3 +136,15 @@ def test_registry_versions(tmp_path):
     assert st.latest_validated("m", "D") is None
     with pytest.raises(ValueError):
         st.register("m", "f", {}, "LIVE", {}, "D")
+
+
+@pytest.mark.parametrize("base", ["http://testnet.binance.vision", "https://user:pw@testnet.binance.vision"])
+def test_testnet_requires_https_and_no_userinfo(base):
+    with pytest.raises(ExchangeError):
+        SpotTestnetClient("k", "s", base=base)
+
+
+def test_testnet_base_immutable():
+    c = SpotTestnetClient("k", "s")
+    with pytest.raises(ExchangeError):
+        c.base = "https://api.binance.com"
