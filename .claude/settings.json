@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -m pytest:*)",
+      "Bash(python3 scripts/run_research.py:*)",
+      "Bash(python3 scripts/backtest_one.py:*)",
+      "Bash(python3 scripts/run_challenge.py:*)",
+      "Bash(python3 scripts/run_ml.py:*)",
+      "Bash(python3 scripts/risk_check.py:*)",
+      "Bash(python3 scripts/data_quality.py:*)",
+      "Bash(python3 scripts/security_scan.py:*)",
+      "Bash(python3 scripts/run_tests.py:*)",
+      "Bash(ruff check:*)"
+    ],
+    "deny": [
+      "Read(./docker/.env)",
+      "Read(./.env)",
+      "Read(./data/owner_token)",
+      "Bash(cat docker/.env:*)",
+      "Bash(printenv:*)",
+      "Bash(env)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
+        "hooks": [{ "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/protect_risk_files.py\"" }] }
+    ],
+    "PostToolUse": [
+      { "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/lint_python.py\"" }] }
+    ]
+  }
+}

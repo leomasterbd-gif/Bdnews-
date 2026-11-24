@@ -1,0 +1,21 @@
+{
+ "ran_at": "2026-11-24T23:00:53Z",
+ "bandit": {
+  "by_severity": {},
+  "issues": []
+ },
+ "pip_audit": {
+  "packages": 38,
+  "vulnerable": []
+ },
+ "secret_scan": {
+  "files_scanned": 162,
+  "hits": []
+ },
+ "policy": {
+  "withdraw_endpoint_absent": true,
+  "testnet_only_order_client": true,
+  "live_trading_refused_in_limits": true
+ },
+ "ok": true
+}

@@ -1,0 +1,21 @@
+# Deterministic risk limits — owner-controlled.
+# Research agents and automated optimisation MUST NOT edit this file
+# (enforced by .claude/hooks/protect_risk_files.py and by code-level hard ceilings
+# in atm/risk/limits.py: values above the ceilings are rejected at load time).
+max_risk_per_trade_pct: 1.0        # % of equity lost if the stop is hit
+max_session_loss_pct: 3.0          # 4-hour session loss -> session halted
+max_daily_loss_pct: 5.0            # rolling-day loss -> trading halted for the day
+max_drawdown_pct: 10.0             # peak-to-trough equity drawdown -> full stop (manual reset)
+max_exposure_pct: 60.0             # total notional in open positions, % of equity
+max_position_pct: 30.0             # single-position notional, % of equity
+max_open_positions: 2
+max_consecutive_losses: 4          # then pause
+pause_bars_after_losses: 12        # bars to stay flat after the consecutive-loss trigger
+max_atr_pct: 2.5                   # volatility protection: ATR(14)/price % above this -> no new entries
+min_bar_quote_volume: 20000        # liquidity protection: last-bar quote volume (quote currency units)
+max_data_staleness_s: 180          # stale data -> no new entries
+max_spread_bps: 15                 # wide spread -> no new entries
+min_order_notional: 5.0            # Binance spot NOTIONAL filter (USDT)
+allow_leverage: false
+allow_short: false
+live_trading_enabled: false        # real-money execution is disabled; see docs/SECURITY.md

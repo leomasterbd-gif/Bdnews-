@@ -1,0 +1,16 @@
+[project]
+name = "ai-trading-master"
+version = "0.1.0"
+description = "AI Trading Master — autonomous quantitative research & simulation platform (simulation / Binance Spot Testnet only)"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 160
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B"]
+ignore = ["E731", "B008", "B023", "E501", "E741", "B905"]
