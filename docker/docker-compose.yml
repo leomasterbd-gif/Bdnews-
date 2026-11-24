@@ -1,0 +1,50 @@
+# AI Trading Master — simulation stack. Secrets come from docker/.env (chmod 600, never committed).
+name: atm
+services:
+  api:
+    build: { context: .., dockerfile: docker/Dockerfile }
+    env_file: [.env]
+    volumes: [atm-data:/app/data, atm-reports:/app/reports]
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    expose: ["8000"]
+  research:
+    # Re-runs the full research cycle every 6 hours (deterministic, no LLM calls).
+    build: { context: .., dockerfile: docker/Dockerfile }
+    command: ["sh", "-c", "while true; do python scripts/run_research.py --workers 2; sleep 21600; done"]
+    volumes: [atm-data:/app/data, atm-reports:/app/reports]
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+  telegram:
+    build: { context: .., dockerfile: docker/Dockerfile }
+    command: ["python", "-m", "atm.telegram.bot"]
+    env_file: [.env]
+    environment: { ATM_API_URL: "http://api:8000" }
+    depends_on: [api]
+    restart: unless-stopped
+    profiles: [telegram]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+  nginx:
+    image: nginx:1.27-alpine
+    volumes: ["./nginx.conf:/etc/nginx/conf.d/default.conf:ro", "./certs:/etc/nginx/certs:ro"]
+    ports: ["443:443", "80:80"]
+    depends_on: [api]
+    restart: unless-stopped
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    volumes: ["./prometheus.yml:/etc/prometheus/prometheus.yml:ro"]
+    profiles: [monitoring]
+    restart: unless-stopped
+  grafana:
+    image: grafana/grafana:11.1.0
+    profiles: [monitoring]
+    ports: ["127.0.0.1:3000:3000"]
+    restart: unless-stopped
+volumes:
+  atm-data: {}
+  atm-reports: {}

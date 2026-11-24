@@ -1,0 +1,117 @@
+{
+  "provenance": "Real exchange OHLCV candles redistributed in the Freqtrade repository test fixtures (GPL-3.0). Used read-only for research.",
+  "files": [
+    {
+      "file": "BTC_USDT-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/BTC_USDT-5m.feather",
+      "source_sha256": "38f89dd1e8a116e5f451e24f7022e1213ab17336da98ef9abc1c38f9bf1850cc",
+      "rows": 3106,
+      "start": "2025-11-24 00:00:00+00:00",
+      "end": "2025-12-04 18:45:00+00:00"
+    },
+    {
+      "file": "XRP_USDT-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/XRP_USDT-5m.feather",
+      "source_sha256": "cecc2f79c6eb5ec1d03d33ee4e53dd0b3fa4239cd200b94e39308b271567a8b9",
+      "rows": 3106,
+      "start": "2025-11-24 00:00:00+00:00",
+      "end": "2025-12-04 18:45:00+00:00"
+    },
+    {
+      "file": "ETH_BTC-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/ETH_BTC-5m.feather",
+      "source_sha256": "f9c807156e870d73d57fa48493ebe38a1a9afc0cc379893888eb7dd07c0c5667",
+      "rows": 5760,
+      "start": "2018-01-10 04:55:00+00:00",
+      "end": "2018-01-30 04:50:00+00:00"
+    },
+    {
+      "file": "LTC_BTC-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/LTC_BTC-5m.feather",
+      "source_sha256": "d07236f5e97f1b19450532cc26b69fad7ca4b57dcd53f835c4c330fd73d98ff7",
+      "rows": 5760,
+      "start": "2018-01-10 04:55:00+00:00",
+      "end": "2018-01-30 04:50:00+00:00"
+    },
+    {
+      "file": "ADA_BTC-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/ADA_BTC-5m.feather",
+      "source_sha256": "d15dcdcaa8fe0fe4d9865d88850a908546c1f1a8bfe2903d6ad7a00b292b858b",
+      "rows": 5720,
+      "start": "2018-01-10 04:55:00+00:00",
+      "end": "2018-01-30 04:50:00+00:00"
+    },
+    {
+      "file": "DASH_BTC-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/DASH_BTC-5m.feather",
+      "source_sha256": "24197f229bdf22acdbca75c6c7bd11c96014b1d79c5f30ff083760c84db14e2c",
+      "rows": 5758,
+      "start": "2018-01-10 04:55:00+00:00",
+      "end": "2018-01-30 04:50:00+00:00"
+    },
+    {
+      "file": "ETC_BTC-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/ETC_BTC-5m.feather",
+      "source_sha256": "7697d0dc8194f5520f92dc7473fb875b60d7c221a35b6f7f992673cad369c72e",
+      "rows": 5759,
+      "start": "2018-01-10 04:55:00+00:00",
+      "end": "2018-01-30 04:45:00+00:00"
+    },
+    {
+      "file": "TRX_BTC-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/TRX_BTC-5m.feather",
+      "source_sha256": "4bee000be8adc463dc375a89f7632c60d18511bb2ccff48cb62b46d7d547a36f",
+      "rows": 5754,
+      "start": "2018-01-10 04:55:00+00:00",
+      "end": "2018-01-30 04:50:00+00:00"
+    },
+    {
+      "file": "XLM_BTC-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/XLM_BTC-5m.feather",
+      "source_sha256": "de22161ebd06531c52740417ea499b2f8c9c6fd3da3de09e323c250abc8a8b3a",
+      "rows": 5760,
+      "start": "2018-01-10 04:55:00+00:00",
+      "end": "2018-01-30 04:50:00+00:00"
+    },
+    {
+      "file": "XMR_BTC-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/XMR_BTC-5m.feather",
+      "source_sha256": "2db4c9181f3e781693dfcb1a2e557cdf9041dc6aac21ba7effd5279aad0d669f",
+      "rows": 5758,
+      "start": "2018-01-10 04:55:00+00:00",
+      "end": "2018-01-30 04:50:00+00:00"
+    },
+    {
+      "file": "ZEC_BTC-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/ZEC_BTC-5m.feather",
+      "source_sha256": "463d6cce5281a780c8813a2f70ba470ea8900eea45a281ac49176b4794ca2bfc",
+      "rows": 5757,
+      "start": "2018-01-10 04:55:00+00:00",
+      "end": "2018-01-30 04:45:00+00:00"
+    },
+    {
+      "file": "NXT_BTC-5m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/NXT_BTC-5m.feather",
+      "source_sha256": "f50b567892aaa2400148e16a8eb557614338d39749d83bd6d1e5d9de4a108b43",
+      "rows": 5760,
+      "start": "2018-01-10 04:55:00+00:00",
+      "end": "2018-01-30 04:50:00+00:00"
+    },
+    {
+      "file": "UNITTEST_BTC-1m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/UNITTEST_BTC-1m.feather",
+      "source_sha256": "59a1e0163954ac90ad6036eb183c1301b109d4ced994113a7b9592b52b951661",
+      "rows": 13681,
+      "start": "2017-11-04 23:02:00+00:00",
+      "end": "2017-11-14 22:59:00+00:00"
+    },
+    {
+      "file": "XRP_ETH-1m.csv.gz",
+      "source": "freqtrade/freqtrade@7fcb509a tests/testdata/XRP_ETH-1m.feather",
+      "source_sha256": "729ecb8fae85dfcc0a5c65a7fa07e4f30f686657f1c7f5a7f2d89a4c9456e1b1",
+      "rows": 2469,
+      "start": "2019-10-11 00:00:00+00:00",
+      "end": "2019-10-13 11:19:00+00:00"
+    }
+  ]
+}

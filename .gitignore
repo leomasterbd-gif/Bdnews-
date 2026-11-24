@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+data/atm.db*
+data/owner_token
+data/settings.json
+data/KILL
+backups/
+.env
+*.env
+!docker/env.example

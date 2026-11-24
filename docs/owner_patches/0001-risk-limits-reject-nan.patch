@@ -1,0 +1,30 @@
+Owner-review patch (audit finding #6). Agents cannot edit atm/risk/limits.py (PreToolUse hook),
+so this fix is proposed for the owner to apply:   git apply docs/owner_patches/0001-risk-limits-reject-nan.patch
+Effect: only makes validation stricter — NaN/inf/non-numeric/bool-typed values are rejected.
+Before: `max_drawdown_pct: .nan` in YAML passed every comparison and disabled the drawdown kill.
+
+--- a/atm/risk/limits.py
++++ b/atm/risk/limits.py
+@@ -5,6 +5,7 @@
+ """
+ from __future__ import annotations
+
++import math
+ from dataclasses import dataclass, fields
+ from pathlib import Path
+
+@@ -59,6 +60,14 @@
+     live_trading_enabled: bool = False
+
+     def __post_init__(self) -> None:
++        # Reject NaN/inf/non-numeric values: NaN silently passes every comparison below.
++        for f in fields(self):
++            v = getattr(self, f.name)
++            if f.type in ("bool", bool):
++                if not isinstance(v, bool):
++                    raise RiskConfigError(f"{f.name} must be a boolean")
++            elif isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v):
++                raise RiskConfigError(f"{f.name}={v!r} must be a finite number")
+         for k, ceil in HARD_CEILINGS.items():
+             v = getattr(self, k)
+             if v is None or v <= 0 or v > ceil:
