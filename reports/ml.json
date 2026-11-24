@@ -1,0 +1,617 @@
+{
+ "BTC_USDT-5m": {
+  "horizon": 6,
+  "cost_threshold": 0.0025,
+  "label_pos_rate": 0.1903839948370442,
+  "models": {
+   "logistic": {
+    "mean_auc": 0.5893947508255791,
+    "fold_aucs": [
+     0.5039754332508094,
+     0.5464929053034114,
+     0.641027406693293,
+     0.6660832580548028
+    ],
+    "mean_brier": 0.14660408146099912,
+    "threshold": 0.6,
+    "signals": 70,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 99.41343609780002,
+     "net_return_pct": -0.586563902199988,
+     "gross_return_pct": 0.06371380000000926,
+     "total_fees": 0.6502777022000001,
+     "total_slippage": 0.13028592578915998,
+     "trades": 11,
+     "win_rate_pct": 45.45454545454545,
+     "profit_factor": 0.5788817521470533,
+     "expectancy": -0.05332399110909139,
+     "avg_win": 0.16126166044000173,
+     "avg_loss": -0.23214536740000233,
+     "sharpe": -4.525744685069589,
+     "sortino": -1.6502956313710835,
+     "max_drawdown_pct": 1.0442672389309182,
+     "exposure_pct": 5.122494432071269,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -0.586563902199984
+    },
+    "verdict": "REJECTED"
+   },
+   "random_forest": {
+    "mean_auc": 0.5475375971689319,
+    "fold_aucs": [
+     0.5201152161493049,
+     0.48601187481131125,
+     0.5986950833218565,
+     0.585328214393255
+    ],
+    "mean_brier": 0.14078226454286918,
+    "threshold": 0.6,
+    "signals": 0,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 100.0,
+     "net_return_pct": 0.0,
+     "gross_return_pct": 0.0,
+     "total_fees": 0.0,
+     "total_slippage": 0.0,
+     "trades": 0,
+     "win_rate_pct": 0.0,
+     "profit_factor": 0.0,
+     "expectancy": 0.0,
+     "avg_win": 0.0,
+     "avg_loss": 0.0,
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "max_drawdown_pct": 0.0,
+     "exposure_pct": 0.0,
+     "capital_usd": 100.0,
+     "net_pnl_usd": 0.0
+    },
+    "verdict": "REJECTED"
+   },
+   "mlp": {
+    "mean_auc": 0.5590389612958152,
+    "fold_aucs": [
+     0.508522186250238,
+     0.5493106571399817,
+     0.6366375154937336,
+     0.5416854862993075
+    ],
+    "mean_brier": 0.162125382470568,
+    "threshold": 0.6,
+    "signals": 48,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 98.98299764669997,
+     "net_return_pct": -1.0170023533000339,
+     "gross_return_pct": -0.19148030000002425,
+     "total_fees": 0.8255220533000001,
+     "total_slippage": 0.16536960886972463,
+     "trades": 14,
+     "win_rate_pct": 14.285714285714286,
+     "profit_factor": 0.0656508780752191,
+     "expectancy": -0.0726430252357156,
+     "avg_win": 0.03572920224999443,
+     "avg_loss": -0.0907050631500006,
+     "sharpe": -14.861104254412949,
+     "sortino": -4.164837502632375,
+     "max_drawdown_pct": 1.0663770093000235,
+     "exposure_pct": 3.0734966592427617,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -1.017002353300029
+    },
+    "verdict": "REJECTED"
+   },
+   "lightgbm": {
+    "mean_auc": 0.50924555467442,
+    "fold_aucs": [
+     0.499023995429442,
+     0.43166951796316794,
+     0.572545103980168,
+     0.5337436013249021
+    ],
+    "mean_brier": 0.15993172032553327,
+    "threshold": 0.6,
+    "signals": 75,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 98.36429206620001,
+     "net_return_pct": -1.6357079337999902,
+     "gross_return_pct": -0.053102799999993344,
+     "total_fees": 1.5826051338,
+     "total_slippage": 0.31702183164363423,
+     "trades": 27,
+     "win_rate_pct": 25.925925925925927,
+     "profit_factor": 0.22633237327571037,
+     "expectancy": -0.06058177532592616,
+     "avg_win": 0.06835967241428419,
+     "avg_loss": -0.10571128203499977,
+     "sharpe": -17.485924644538084,
+     "sortino": -6.218992794228763,
+     "max_drawdown_pct": 1.6376084881910336,
+     "exposure_pct": 5.211581291759465,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -1.635707933799992
+    },
+    "verdict": "REJECTED"
+   },
+   "baseline_prior": {
+    "mean_auc": 0.5,
+    "fold_aucs": [
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "mean_brier": 0.14598806410230128,
+    "threshold": 0.6,
+    "signals": 0,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 100.0,
+     "net_return_pct": 0.0,
+     "gross_return_pct": 0.0,
+     "total_fees": 0.0,
+     "total_slippage": 0.0,
+     "trades": 0,
+     "win_rate_pct": 0.0,
+     "profit_factor": 0.0,
+     "expectancy": 0.0,
+     "avg_win": 0.0,
+     "avg_loss": 0.0,
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "max_drawdown_pct": 0.0,
+     "exposure_pct": 0.0,
+     "capital_usd": 100.0,
+     "net_pnl_usd": 0.0
+    },
+    "verdict": "BASELINE"
+   },
+   "baseline_momentum": {
+    "mean_auc": 0.4699853177174774,
+    "fold_aucs": [
+     0.471862502380499,
+     0.3654523498037637,
+     0.5666402699352706,
+     0.47598614875037637
+    ],
+    "mean_brier": 0.2886040664223821,
+    "threshold": 0.6,
+    "signals": 667,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 96.9759741194,
+     "net_return_pct": -3.024025880600012,
+     "gross_return_pct": -0.8092856000000093,
+     "total_fees": 2.2147402806,
+     "total_slippage": 0.4434946993124832,
+     "trades": 38,
+     "win_rate_pct": 15.789473684210526,
+     "profit_factor": 0.1220075163908249,
+     "expectancy": -0.07957962843684238,
+     "avg_win": 0.07003740428333376,
+     "avg_loss": -0.10763282207187541,
+     "sharpe": -28.74657410545696,
+     "sortino": -19.2100374341554,
+     "max_drawdown_pct": 3.241015393016844,
+     "exposure_pct": 17.99554565701559,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -3.024025880600007
+    },
+    "verdict": "BASELINE"
+   }
+  }
+ },
+ "XRP_USDT-5m": {
+  "horizon": 6,
+  "cost_threshold": 0.0025,
+  "label_pos_rate": 0.24427234591803806,
+  "models": {
+   "logistic": {
+    "mean_auc": 0.49408065583481386,
+    "fold_aucs": [
+     0.5387417456215906,
+     0.4407585236917406,
+     0.49206796207641046,
+     0.5047543919495139
+    ],
+    "mean_brier": 0.19307003899630656,
+    "threshold": 0.6,
+    "signals": 123,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 98.66787259999998,
+     "net_return_pct": -1.332127400000016,
+     "gross_return_pct": -0.740060000000009,
+     "total_fees": 0.5920674000000001,
+     "total_slippage": 0.16640294121122384,
+     "trades": 10,
+     "win_rate_pct": 40.0,
+     "profit_factor": 0.38700854538343626,
+     "expectancy": -0.13321274000000044,
+     "avg_win": 0.21025769750000123,
+     "avg_loss": -0.3621930316666682,
+     "sharpe": -9.419207040564935,
+     "sortino": -3.4569507938109005,
+     "max_drawdown_pct": 1.9597093335606441,
+     "exposure_pct": 6.369710467706013,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -1.3321274000000187
+    },
+    "verdict": "REJECTED"
+   },
+   "random_forest": {
+    "mean_auc": 0.5662403156115932,
+    "fold_aucs": [
+     0.49964111398219924,
+     0.6031815315970707,
+     0.550314465408805,
+     0.6118241514582978
+    ],
+    "mean_brier": 0.16748617307140123,
+    "threshold": 0.6,
+    "signals": 0,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 100.0,
+     "net_return_pct": 0.0,
+     "gross_return_pct": 0.0,
+     "total_fees": 0.0,
+     "total_slippage": 0.0,
+     "trades": 0,
+     "win_rate_pct": 0.0,
+     "profit_factor": 0.0,
+     "expectancy": 0.0,
+     "avg_win": 0.0,
+     "avg_loss": 0.0,
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "max_drawdown_pct": 0.0,
+     "exposure_pct": 0.0,
+     "capital_usd": 100.0,
+     "net_pnl_usd": 0.0
+    },
+    "verdict": "REJECTED"
+   },
+   "mlp": {
+    "mean_auc": 0.5250620621818147,
+    "fold_aucs": [
+     0.5539585127763422,
+     0.5777438285076871,
+     0.506836884758597,
+     0.46170902268463254
+    ],
+    "mean_brier": 0.20767375561132298,
+    "threshold": 0.6,
+    "signals": 140,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 96.9214954,
+     "net_return_pct": -3.0785045999999983,
+     "gross_return_pct": -1.134500000000005,
+     "total_fees": 1.9440046000000002,
+     "total_slippage": 0.5335150140218219,
+     "trades": 33,
+     "win_rate_pct": 24.242424242424242,
+     "profit_factor": 0.12032136645568228,
+     "expectancy": -0.09328801818181869,
+     "avg_win": 0.05263426124999837,
+     "avg_loss": -0.13998314760000014,
+     "sharpe": -26.147561758418668,
+     "sortino": -10.61949447648794,
+     "max_drawdown_pct": 3.146328514238683,
+     "exposure_pct": 8.64142538975501,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -3.0785046000000023
+    },
+    "verdict": "REJECTED"
+   },
+   "lightgbm": {
+    "mean_auc": 0.5320441271810159,
+    "fold_aucs": [
+     0.509133649153029,
+     0.5539308404869295,
+     0.4982946900716543,
+     0.566817329012451
+    ],
+    "mean_brier": 0.18681235359354964,
+    "threshold": 0.6,
+    "signals": 112,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 98.37351753000002,
+     "net_return_pct": -1.6264824699999902,
+     "gross_return_pct": -0.43964999999999144,
+     "total_fees": 1.1868324700000004,
+     "total_slippage": 0.3333086797099737,
+     "trades": 20,
+     "win_rate_pct": 35.0,
+     "profit_factor": 0.3787405236855603,
+     "expectancy": -0.08132412349999978,
+     "avg_win": 0.14165114714285817,
+     "avg_loss": -0.201387730769231,
+     "sharpe": -11.77003319249538,
+     "sortino": -5.1718320880985695,
+     "max_drawdown_pct": 2.1142726900000075,
+     "exposure_pct": 6.6815144766147,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -1.626482469999985
+    },
+    "verdict": "REJECTED"
+   },
+   "baseline_prior": {
+    "mean_auc": 0.5,
+    "fold_aucs": [
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "mean_brier": 0.16990334274821398,
+    "threshold": 0.6,
+    "signals": 0,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 100.0,
+     "net_return_pct": 0.0,
+     "gross_return_pct": 0.0,
+     "total_fees": 0.0,
+     "total_slippage": 0.0,
+     "trades": 0,
+     "win_rate_pct": 0.0,
+     "profit_factor": 0.0,
+     "expectancy": 0.0,
+     "avg_win": 0.0,
+     "avg_loss": 0.0,
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "max_drawdown_pct": 0.0,
+     "exposure_pct": 0.0,
+     "capital_usd": 100.0,
+     "net_pnl_usd": 0.0
+    },
+    "verdict": "BASELINE"
+   },
+   "baseline_momentum": {
+    "mean_auc": 0.49495411098553865,
+    "fold_aucs": [
+     0.528845463680735,
+     0.4638076531354576,
+     0.5154338371037892,
+     0.4717294900221729
+    ],
+    "mean_brier": 0.2772610279735558,
+    "threshold": 0.6,
+    "signals": 566,
+    "backtest": {
+     "initial_equity": 100.0,
+     "final_equity": 96.95518326000001,
+     "net_return_pct": -3.0448167399999893,
+     "gross_return_pct": -1.1006199999999966,
+     "total_fees": 1.9441967400000002,
+     "total_slippage": 0.5302993615876272,
+     "trades": 33,
+     "win_rate_pct": 15.151515151515152,
+     "profit_factor": 0.17925770602167035,
+     "expectancy": -0.09226717393939442,
+     "avg_win": 0.13300322599999817,
+     "avg_loss": -0.13249403107142882,
+     "sharpe": -20.590967001293816,
+     "sortino": -14.258633424323119,
+     "max_drawdown_pct": 3.0448167399999893,
+     "exposure_pct": 16.124721603563476,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -3.0448167399999875
+    },
+    "verdict": "BASELINE"
+   }
+  }
+ },
+ "ETH_BTC-5m": {
+  "horizon": 6,
+  "cost_threshold": 0.0025,
+  "label_pos_rate": 0.29532417868937944,
+  "models": {
+   "logistic": {
+    "mean_auc": 0.5241966378812841,
+    "fold_aucs": [
+     0.534426530705985,
+     0.45500898132317613,
+     0.5741998792270531,
+     0.5331511602689222
+    ],
+    "mean_brier": 0.2128984296279538,
+    "threshold": 0.6,
+    "signals": 240,
+    "backtest": {
+     "initial_equity": 0.008695652173913044,
+     "final_equity": 0.008434191286037037,
+     "net_return_pct": -3.0068002105740788,
+     "gross_return_pct": -2.1233313420000677,
+     "total_fees": 7.6823379876e-05,
+     "total_slippage": 9.065274350369569e-05,
+     "trades": 15,
+     "win_rate_pct": 26.666666666666668,
+     "profit_factor": 0.4134778749374472,
+     "expectancy": -1.7430725858400144e-05,
+     "avg_win": 4.608022770100008e-05,
+     "avg_loss": -4.052561806181841e-05,
+     "sharpe": -6.167360379709621,
+     "sortino": -1.694715755840314,
+     "max_drawdown_pct": 3.0068002105740788,
+     "exposure_pct": 3.47985347985348,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -3.0068002105740796
+    },
+    "verdict": "REJECTED"
+   },
+   "random_forest": {
+    "mean_auc": 0.5378642475465558,
+    "fold_aucs": [
+     0.5474331296985286,
+     0.48138160884714437,
+     0.5823342924126172,
+     0.5403079592279332
+    ],
+    "mean_brier": 0.20117813343485563,
+    "threshold": 0.6,
+    "signals": 0,
+    "backtest": {
+     "initial_equity": 0.008695652173913044,
+     "final_equity": 0.008695652173913044,
+     "net_return_pct": 0.0,
+     "gross_return_pct": 0.0,
+     "total_fees": 0.0,
+     "total_slippage": 0.0,
+     "trades": 0,
+     "win_rate_pct": 0.0,
+     "profit_factor": 0.0,
+     "expectancy": 0.0,
+     "avg_win": 0.0,
+     "avg_loss": 0.0,
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "max_drawdown_pct": 0.0,
+     "exposure_pct": 0.0,
+     "capital_usd": 100.0,
+     "net_pnl_usd": 0.0
+    },
+    "verdict": "REJECTED"
+   },
+   "mlp": {
+    "mean_auc": 0.5244815931166977,
+    "fold_aucs": [
+     0.5362102491081407,
+     0.5168783950483693,
+     0.5191860258596193,
+     0.5256517024506614
+    ],
+    "mean_brier": 0.21435517181668867,
+    "threshold": 0.6,
+    "signals": 198,
+    "backtest": {
+     "initial_equity": 0.008695652173913044,
+     "final_equity": 0.008411948498587047,
+     "net_return_pct": -3.2625922662489537,
+     "gross_return_pct": -1.2700653359999592,
+     "total_fees": 0.00017326321132600002,
+     "total_slippage": 0.00021690141676204987,
+     "trades": 34,
+     "win_rate_pct": 47.05882352941177,
+     "profit_factor": 0.5808224359613668,
+     "expectancy": -8.34422574488232e-06,
+     "avg_win": 2.456916142625008e-05,
+     "avg_loss": -3.7600569897000006e-05,
+     "sharpe": -5.371008615927639,
+     "sortino": -1.7667611960043434,
+     "max_drawdown_pct": 3.834179196958354,
+     "exposure_pct": 4.5787545787545785,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -3.262592266248957
+    },
+    "verdict": "REJECTED"
+   },
+   "lightgbm": {
+    "mean_auc": 0.5290776892857112,
+    "fold_aucs": [
+     0.5337796457060615,
+     0.5040708117817646,
+     0.5253134768400114,
+     0.5531468228150076
+    ],
+    "mean_brier": 0.21432735286652393,
+    "threshold": 0.6,
+    "signals": 295,
+    "backtest": {
+     "initial_equity": 0.008695652173913044,
+     "final_equity": 0.008425933763877045,
+     "net_return_pct": -3.1017617154139865,
+     "gross_return_pct": -2.2717403599999964,
+     "total_fees": 7.217577003600002e-05,
+     "total_slippage": 8.292097784091699e-05,
+     "trades": 14,
+     "win_rate_pct": 21.428571428571427,
+     "profit_factor": 0.08400913456105394,
+     "expectancy": -1.926560071685701e-05,
+     "avg_win": 8.245646347666545e-06,
+     "avg_loss": -2.676866809809071e-05,
+     "sharpe": -14.507520728882863,
+     "sortino": -2.8196567302786515,
+     "max_drawdown_pct": 3.1616137818408663,
+     "exposure_pct": 2.0604395604395602,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -3.101761715413984
+    },
+    "verdict": "REJECTED"
+   },
+   "baseline_prior": {
+    "mean_auc": 0.5,
+    "fold_aucs": [
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "mean_brier": 0.20237227342453845,
+    "threshold": 0.6,
+    "signals": 0,
+    "backtest": {
+     "initial_equity": 0.008695652173913044,
+     "final_equity": 0.008695652173913044,
+     "net_return_pct": 0.0,
+     "gross_return_pct": 0.0,
+     "total_fees": 0.0,
+     "total_slippage": 0.0,
+     "trades": 0,
+     "win_rate_pct": 0.0,
+     "profit_factor": 0.0,
+     "expectancy": 0.0,
+     "avg_win": 0.0,
+     "avg_loss": 0.0,
+     "sharpe": 0.0,
+     "sortino": 0.0,
+     "max_drawdown_pct": 0.0,
+     "exposure_pct": 0.0,
+     "capital_usd": 100.0,
+     "net_pnl_usd": 0.0
+    },
+    "verdict": "BASELINE"
+   },
+   "baseline_momentum": {
+    "mean_auc": 0.4687441207941716,
+    "fold_aucs": [
+     0.5172591980157089,
+     0.42900209924903154,
+     0.4490600134981529,
+     0.4796551724137931
+    ],
+    "mean_brier": 0.28027644829227394,
+    "threshold": 0.6,
+    "signals": 1027,
+    "backtest": {
+     "initial_equity": 0.008695652173913044,
+     "final_equity": 0.008384450239821043,
+     "net_return_pct": -3.5788222420580107,
+     "gross_return_pct": -2.754465625000002,
+     "total_fees": 7.1683184092e-05,
+     "total_slippage": 8.262716370396219e-05,
+     "trades": 14,
+     "win_rate_pct": 14.285714285714286,
+     "profit_factor": 0.03608076948556484,
+     "expectancy": -2.2228709578000003e-05,
+     "avg_win": 5.824349640499906e-06,
+     "avg_loss": -2.6904219447749986e-05,
+     "sharpe": -14.245206999295613,
+     "sortino": -2.5683605626225785,
+     "max_drawdown_pct": 3.5788222420580107,
+     "exposure_pct": 2.77014652014652,
+     "capital_usd": 100.0,
+     "net_pnl_usd": -3.5788222420580054
+    },
+    "verdict": "BASELINE"
+   }
+  }
+ }
+}

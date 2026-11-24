@@ -45,8 +45,8 @@ def _frame(entry, exit_, stop_dist, tp_dist=None):
 
 
 def buy_hold(df, p):
-    e = pd.Series(False, df.index)
-    e.iloc[0] = True
+    """Always-long baseline: wants a position on every bar (re-enters after a stop)."""
+    e = pd.Series(True, df.index)
     return _frame(e, pd.Series(False, df.index), df.close * p["stop_pct"] / 100)
 
 

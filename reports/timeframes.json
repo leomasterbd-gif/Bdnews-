@@ -1,0 +1,638 @@
+{
+ "BTC_USDT-5m": {
+  "5m": {
+   "buy_hold": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "ema_trend": {
+    "net_return_pct": -2.2954353665000315,
+    "trades": 14,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 2.335378087794604,
+    "total_fees": 0.8171868665000002
+   },
+   "momentum": {
+    "net_return_pct": -1.1934818473999798,
+    "trades": 32,
+    "profit_factor": 0.578647511889348,
+    "max_drawdown_pct": 1.4424447009106167,
+    "total_fees": 1.8830426474000002
+   },
+   "mean_reversion": {
+    "net_return_pct": -0.6811844530000277,
+    "trades": 11,
+    "profit_factor": 0.27105796470283766,
+    "max_drawdown_pct": 0.9593838276960809,
+    "total_fees": 0.6505102530000001
+   },
+   "breakout": {
+    "net_return_pct": -1.233689929400028,
+    "trades": 25,
+    "profit_factor": 0.6075188215487068,
+    "max_drawdown_pct": 2.138167867200036,
+    "total_fees": 1.4626807294
+   },
+   "pullback": {
+    "net_return_pct": -1.5380017356999898,
+    "trades": 39,
+    "profit_factor": 0.5853220089454444,
+    "max_drawdown_pct": 1.8195632955780305,
+    "total_fees": 2.2805726356999996
+   },
+   "vol_expansion": {
+    "net_return_pct": -2.5012929177000265,
+    "trades": 32,
+    "profit_factor": 0.1449758040139131,
+    "max_drawdown_pct": 2.570890633065759,
+    "total_fees": 1.8693354177000001
+   },
+   "vwap_reversion": {
+    "net_return_pct": -3.1362784212999206,
+    "trades": 43,
+    "profit_factor": 0.16974742887845393,
+    "max_drawdown_pct": 3.1362784212999206,
+    "total_fees": 2.5137825213000005
+   },
+   "macd_stochrsi": {
+    "net_return_pct": -1.6246330168999346,
+    "trades": 61,
+    "profit_factor": 0.673667284975762,
+    "max_drawdown_pct": 2.3393286763708776,
+    "total_fees": 3.5785343169000003
+   },
+   "ichimoku_trend": {
+    "net_return_pct": -0.7776098751999583,
+    "trades": 29,
+    "profit_factor": 0.7366136857608033,
+    "max_drawdown_pct": 2.7121625083699197,
+    "total_fees": 1.7012388752
+   },
+   "regime_adaptive": {
+    "net_return_pct": -0.9238716264000191,
+    "trades": 26,
+    "profit_factor": 0.5977784850304148,
+    "max_drawdown_pct": 1.7376234889809772,
+    "total_fees": 1.5209944264000002
+   }
+  },
+  "15m": {
+   "buy_hold": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "ema_trend": {
+    "net_return_pct": 1.5857861890000047,
+    "trades": 3,
+    "profit_factor": 6.023959181069256,
+    "max_drawdown_pct": 0.6340031129221213,
+    "total_fees": 0.17756881100000002
+   },
+   "momentum": {
+    "net_return_pct": -1.9599989961000208,
+    "trades": 14,
+    "profit_factor": 0.14316480755795838,
+    "max_drawdown_pct": 2.0274275045840118,
+    "total_fees": 0.8153198961
+   },
+   "mean_reversion": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "breakout": {
+    "net_return_pct": 0.5453483598999886,
+    "trades": 4,
+    "profit_factor": 1.908781726024576,
+    "max_drawdown_pct": 0.6572257904049916,
+    "total_fees": 0.2353831401
+   },
+   "pullback": {
+    "net_return_pct": -0.6919023237999977,
+    "trades": 9,
+    "profit_factor": 0.4815292376035341,
+    "max_drawdown_pct": 1.3197619556565399,
+    "total_fees": 0.5354853238000001
+   },
+   "vol_expansion": {
+    "net_return_pct": -0.6688098591999925,
+    "trades": 7,
+    "profit_factor": 0.19779400672446418,
+    "max_drawdown_pct": 0.7259944120857398,
+    "total_fees": 0.4096130592000001
+   },
+   "vwap_reversion": {
+    "net_return_pct": -0.17630549890000902,
+    "trades": 10,
+    "profit_factor": 0.8362238539124689,
+    "max_drawdown_pct": 1.0246209548300467,
+    "total_fees": 0.5935031989000001
+   },
+   "macd_stochrsi": {
+    "net_return_pct": -0.5693113065000532,
+    "trades": 15,
+    "profit_factor": 0.7418001475794384,
+    "max_drawdown_pct": 1.6042261400261215,
+    "total_fees": 0.8796256065000001
+   },
+   "ichimoku_trend": {
+    "net_return_pct": 0.18615733919999933,
+    "trades": 11,
+    "profit_factor": 1.1276589158601058,
+    "max_drawdown_pct": 0.9775388610589797,
+    "total_fees": 0.6491326608
+   },
+   "regime_adaptive": {
+    "net_return_pct": 0.002331869599991876,
+    "trades": 5,
+    "profit_factor": 1.0041246199802245,
+    "max_drawdown_pct": 0.6674232913983502,
+    "total_fees": 0.29480033040000003
+   }
+  },
+  "30m": {
+   "buy_hold": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "ema_trend": {
+    "net_return_pct": 1.6211219141999855,
+    "trades": 1,
+    "profit_factor": 1000000000.0,
+    "max_drawdown_pct": 0.7173426933282046,
+    "total_fees": 0.060793485800000005
+   },
+   "momentum": {
+    "net_return_pct": -0.6304025278999981,
+    "trades": 9,
+    "profit_factor": 0.4339603840850189,
+    "max_drawdown_pct": 0.9849233280000091,
+    "total_fees": 0.5279200279
+   },
+   "mean_reversion": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "breakout": {
+    "net_return_pct": 0.4799010630000211,
+    "trades": 4,
+    "profit_factor": 1.5833948229385233,
+    "max_drawdown_pct": 0.822600825599995,
+    "total_fees": 0.235355337
+   },
+   "pullback": {
+    "net_return_pct": -0.36564103579997953,
+    "trades": 3,
+    "profit_factor": 0.3279130974671809,
+    "max_drawdown_pct": 0.5789976013216402,
+    "total_fees": 0.17832063580000002
+   },
+   "vol_expansion": {
+    "net_return_pct": -0.29049351679999447,
+    "trades": 3,
+    "profit_factor": 0.31757623076192615,
+    "max_drawdown_pct": 0.6482221258595655,
+    "total_fees": 0.17554951680000003
+   },
+   "vwap_reversion": {
+    "net_return_pct": -0.275579792699987,
+    "trades": 3,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.3126409554386145,
+    "total_fees": 0.17846189270000004
+   },
+   "macd_stochrsi": {
+    "net_return_pct": -0.6840874759999838,
+    "trades": 7,
+    "profit_factor": 0.32721917467308653,
+    "max_drawdown_pct": 1.356748516984796,
+    "total_fees": 0.40848927600000007
+   },
+   "ichimoku_trend": {
+    "net_return_pct": -0.44049455040000574,
+    "trades": 3,
+    "profit_factor": 0.12269218945367795,
+    "max_drawdown_pct": 0.5868948832000065,
+    "total_fees": 0.17657455040000003
+   },
+   "regime_adaptive": {
+    "net_return_pct": -0.26963125120000875,
+    "trades": 2,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.40950710552934977,
+    "total_fees": 0.11801525120000002
+   }
+  },
+  "1h": {
+   "buy_hold": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "ema_trend": {
+    "net_return_pct": -0.03382787440000534,
+    "trades": 2,
+    "profit_factor": 0.9073324835678471,
+    "max_drawdown_pct": 0.6984332931820103,
+    "total_fees": 0.11824207440000002
+   },
+   "momentum": {
+    "net_return_pct": -0.7516428227999916,
+    "trades": 3,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.864270162799996,
+    "total_fees": 0.1752648228
+   },
+   "mean_reversion": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "breakout": {
+    "net_return_pct": -0.4161837119999956,
+    "trades": 1,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.4161837119999956,
+    "total_fees": 0.05877571200000001
+   },
+   "pullback": {
+    "net_return_pct": -0.34846922560000104,
+    "trades": 1,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.34846922560000104,
+    "total_fees": 0.059224425600000005
+   },
+   "vol_expansion": {
+    "net_return_pct": -0.554533475199992,
+    "trades": 2,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.554533475199992,
+    "total_fees": 0.11721187520000001
+   },
+   "vwap_reversion": {
+    "net_return_pct": 0.2552932502999816,
+    "trades": 1,
+    "profit_factor": 1000000000.0,
+    "max_drawdown_pct": 0.08423467230241899,
+    "total_fees": 0.06000524970000001
+   },
+   "macd_stochrsi": {
+    "net_return_pct": -0.309209583999992,
+    "trades": 2,
+    "profit_factor": 0.2570358351746301,
+    "max_drawdown_pct": 0.5151628735999947,
+    "total_fees": 0.11695038400000002
+   },
+   "ichimoku_trend": {
+    "net_return_pct": -0.450039142400005,
+    "trades": 1,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.6620824154423111,
+    "total_fees": 0.05824394240000001
+   },
+   "regime_adaptive": {
+    "net_return_pct": -0.2680327890000056,
+    "trades": 1,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.2987909206727202,
+    "total_fees": 0.057945789000000004
+   }
+  }
+ },
+ "XRP_USDT-5m": {
+  "5m": {
+   "buy_hold": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "ema_trend": {
+    "net_return_pct": -1.560030169999993,
+    "trades": 11,
+    "profit_factor": 0.21916728945212585,
+    "max_drawdown_pct": 1.560030169999993,
+    "total_fees": 0.6509401700000003
+   },
+   "momentum": {
+    "net_return_pct": -2.2505574799999706,
+    "trades": 44,
+    "profit_factor": 0.5425134586236748,
+    "max_drawdown_pct": 2.2505574799999706,
+    "total_fees": 2.60343748
+   },
+   "mean_reversion": {
+    "net_return_pct": 0.4940488900000206,
+    "trades": 9,
+    "profit_factor": 2.573760910953074,
+    "max_drawdown_pct": 0.22710729832974286,
+    "total_fees": 0.5411411100000001
+   },
+   "breakout": {
+    "net_return_pct": 0.9328696599999908,
+    "trades": 15,
+    "profit_factor": 1.509905957307138,
+    "max_drawdown_pct": 1.3163372559798159,
+    "total_fees": 0.89981034
+   },
+   "pullback": {
+    "net_return_pct": -3.0427709600000408,
+    "trades": 20,
+    "profit_factor": 0.08714500880729545,
+    "max_drawdown_pct": 3.191570782086517,
+    "total_fees": 1.1775709600000002
+   },
+   "vol_expansion": {
+    "net_return_pct": -2.108906750000017,
+    "trades": 24,
+    "profit_factor": 0.21846365098637768,
+    "max_drawdown_pct": 2.1745747284047434,
+    "total_fees": 1.41727675
+   },
+   "vwap_reversion": {
+    "net_return_pct": -3.050579940000009,
+    "trades": 20,
+    "profit_factor": 0.08188851663653116,
+    "max_drawdown_pct": 3.09816939802694,
+    "total_fees": 1.17529994
+   },
+   "macd_stochrsi": {
+    "net_return_pct": -3.109946879999992,
+    "trades": 41,
+    "profit_factor": 0.3217821793514063,
+    "max_drawdown_pct": 3.171118525871275,
+    "total_fees": 2.4095668800000003
+   },
+   "ichimoku_trend": {
+    "net_return_pct": -0.37117887999997823,
+    "trades": 21,
+    "profit_factor": 0.8344058661919057,
+    "max_drawdown_pct": 1.9856465999999906,
+    "total_fees": 1.2450788800000003
+   },
+   "regime_adaptive": {
+    "net_return_pct": -0.6032954499999743,
+    "trades": 27,
+    "profit_factor": 0.7835604929073319,
+    "max_drawdown_pct": 2.066062579999983,
+    "total_fees": 1.59950545
+   }
+  },
+  "15m": {
+   "buy_hold": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "ema_trend": {
+    "net_return_pct": -1.3403956599999822,
+    "trades": 4,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 1.5532833740786955,
+    "total_fees": 0.23681566000000004
+   },
+   "momentum": {
+    "net_return_pct": -1.212463620000026,
+    "trades": 13,
+    "profit_factor": 0.4535106564247426,
+    "max_drawdown_pct": 1.6466634280125403,
+    "total_fees": 0.7735436200000002
+   },
+   "mean_reversion": {
+    "net_return_pct": -0.2859249600000058,
+    "trades": 1,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.2859249600000058,
+    "total_fees": 0.05960496000000001
+   },
+   "breakout": {
+    "net_return_pct": -0.38971854000000583,
+    "trades": 6,
+    "profit_factor": 0.7621110742300062,
+    "max_drawdown_pct": 1.0987009778813839,
+    "total_fees": 0.35753854
+   },
+   "pullback": {
+    "net_return_pct": -0.6255716800000033,
+    "trades": 14,
+    "profit_factor": 0.7255570316989483,
+    "max_drawdown_pct": 0.96669746000001,
+    "total_fees": 0.8340916800000001
+   },
+   "vol_expansion": {
+    "net_return_pct": -0.2307727699999873,
+    "trades": 5,
+    "profit_factor": 0.6609231815018166,
+    "max_drawdown_pct": 0.4876339300798893,
+    "total_fees": 0.29940277000000004
+   },
+   "vwap_reversion": {
+    "net_return_pct": -0.7275644400000059,
+    "trades": 12,
+    "profit_factor": 0.6518894073233158,
+    "max_drawdown_pct": 1.1271450201778555,
+    "total_fees": 0.71506444
+   },
+   "macd_stochrsi": {
+    "net_return_pct": 0.28829498000007003,
+    "trades": 20,
+    "profit_factor": 1.0945654568610501,
+    "max_drawdown_pct": 2.2832131902720376,
+    "total_fees": 1.19166502
+   },
+   "ichimoku_trend": {
+    "net_return_pct": 0.9771263800000263,
+    "trades": 5,
+    "profit_factor": 2.1743991267542997,
+    "max_drawdown_pct": 0.8424816999999751,
+    "total_fees": 0.29979362000000004
+   },
+   "regime_adaptive": {
+    "net_return_pct": -0.755591769999997,
+    "trades": 4,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.8089211393736417,
+    "total_fees": 0.23818177000000004
+   }
+  },
+  "30m": {
+   "buy_hold": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "ema_trend": {
+    "net_return_pct": -1.1865572999999907,
+    "trades": 3,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 1.3688855762264307,
+    "total_fees": 0.17733730000000003
+   },
+   "momentum": {
+    "net_return_pct": -2.0743908000000033,
+    "trades": 9,
+    "profit_factor": 0.014745849040400901,
+    "max_drawdown_pct": 2.2622510763254833,
+    "total_fees": 0.5308908000000001
+   },
+   "mean_reversion": {
+    "net_return_pct": -0.37930319999999185,
+    "trades": 1,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.37930319999999185,
+    "total_fees": 0.05960320000000001
+   },
+   "breakout": {
+    "net_return_pct": 0.4509760700000198,
+    "trades": 3,
+    "profit_factor": 1.4281197782457422,
+    "max_drawdown_pct": 1.0533876099999895,
+    "total_fees": 0.17939393
+   },
+   "pullback": {
+    "net_return_pct": -0.7296148399999813,
+    "trades": 4,
+    "profit_factor": 0.3879801990792171,
+    "max_drawdown_pct": 1.2234338217190222,
+    "total_fees": 0.23891484000000002
+   },
+   "vol_expansion": {
+    "net_return_pct": -0.6301021399999884,
+    "trades": 3,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.8148674581712534,
+    "total_fees": 0.17870214
+   },
+   "vwap_reversion": {
+    "net_return_pct": 0.14944084000001467,
+    "trades": 6,
+    "profit_factor": 1.1199222984269592,
+    "max_drawdown_pct": 1.2656853126217227,
+    "total_fees": 0.36211916000000005
+   },
+   "macd_stochrsi": {
+    "net_return_pct": 1.149104610000018,
+    "trades": 6,
+    "profit_factor": 2.0286153906831106,
+    "max_drawdown_pct": 1.3987473709655585,
+    "total_fees": 0.36030539000000006
+   },
+   "ichimoku_trend": {
+    "net_return_pct": -0.230959350000004,
+    "trades": 1,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.230959350000004,
+    "total_fees": 0.05950935
+   },
+   "regime_adaptive": {
+    "net_return_pct": -0.6495632200000045,
+    "trades": 4,
+    "profit_factor": 0.16711847320683695,
+    "max_drawdown_pct": 0.8155810363202121,
+    "total_fees": 0.23868322000000003
+   }
+  },
+  "1h": {
+   "buy_hold": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "ema_trend": {
+    "net_return_pct": -0.45406296000000124,
+    "trades": 1,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 1.261791996190731,
+    "total_fees": 0.05930296
+   },
+   "momentum": {
+    "net_return_pct": -1.6782568000000109,
+    "trades": 4,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 1.6782568000000109,
+    "total_fees": 0.23543680000000003
+   },
+   "mean_reversion": {
+    "net_return_pct": -0.7345569600000101,
+    "trades": 1,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.7345569600000101,
+    "total_fees": 0.05919696000000001
+   },
+   "breakout": {
+    "net_return_pct": 0.0,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.0,
+    "total_fees": 0.0
+   },
+   "pullback": {
+    "net_return_pct": -0.6250343499999977,
+    "trades": 1,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.6250343499999977,
+    "total_fees": 0.059304350000000006
+   },
+   "vol_expansion": {
+    "net_return_pct": -0.739740599999994,
+    "trades": 2,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.7998453289141949,
+    "total_fees": 0.1187406
+   },
+   "vwap_reversion": {
+    "net_return_pct": 0.09185447999999763,
+    "trades": 3,
+    "profit_factor": 1.1042523521605603,
+    "max_drawdown_pct": 0.8275930799999998,
+    "total_fees": 0.17960552000000002
+   },
+   "macd_stochrsi": {
+    "net_return_pct": 1.669563850000011,
+    "trades": 5,
+    "profit_factor": 2.338360017036399,
+    "max_drawdown_pct": 1.1071736699999946,
+    "total_fees": 0.29896615000000004
+   },
+   "ichimoku_trend": {
+    "net_return_pct": -1.3568162800000172,
+    "trades": 3,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 1.3568162800000172,
+    "total_fees": 0.17781628
+   },
+   "regime_adaptive": {
+    "net_return_pct": -0.1896696500000128,
+    "trades": 1,
+    "profit_factor": 0.0,
+    "max_drawdown_pct": 0.1896696500000128,
+    "total_fees": 0.05951965000000001
+   }
+  }
+ }
+}
