@@ -89,19 +89,22 @@ def write_markdown() -> Path:
         for n, v in sorted(ch["summary"].items(), key=lambda kv: -kv[1]["mean_return_pct"]):
             a(f"| {n} | {v['sessions']} | {v['target_hits']} | {v['target_hit_rate_pct']:.2f} | {v['prob_loss_pct']:.1f} | {v['prob_no_trade_pct']:.1f} | "
               f"{_f(v['median_return_pct'])} | {_f(v['mean_return_pct'])} | {_f(v['worst_return_pct'])} | {_f(v['best_return_pct'])} | {v['worst_max_dd_pct']:.2f} | {v['mean_fees_usd']:.3f} |")
-        a(f"\n**Perfect-foresight upper bound** (knows every future price, 100% capital, no risk limits, fees included): "
-          f"median **{o['oracle_median_pct']:.2f}%**, 95th pct {o['oracle_p95_pct']:.2f}%, max **{o['oracle_max_pct']:.2f}%**, "
-          f"target reached in **{o['oracle_target_hit_rate_pct']:.2f}%** of sessions. Median |4h price change| {o['abs_price_change_median_pct']:.2f}% (max {o['abs_price_change_max_pct']:.2f}%).\n")
+        a("\n**Perfect-foresight bounds** (knows every future price, 100% of capital, no stops or risk limits, 0.1% fee per side):\n")
+        a(f"* *Realistic oracle* (trades at bar closes): median **{o['oracle_close_to_close_median_pct']:.2f}%**, max **{o['oracle_close_to_close_max_pct']:.2f}%** — never reached +100%.")
+        a(f"* *Impossible intrabar oracle* (buys the exact low and sells the exact high of every 5-minute bar): median {o['oracle_median_pct']:.2f}%, "
+          f"reached +100% in {o['oracle_target_hit_rate_pct']:.2f}% of sessions. No real execution can do this; it is only a strict mathematical ceiling.")
+        a(f"* Median |4h price change| {o['abs_price_change_median_pct']:.2f}% (max {o['abs_price_change_max_pct']:.2f}%).\n")
         d = ch.get("doubling_analysis", {})
         a(f"Doubling analysis for best-by-mean strategy `{ch['best_by_mean']}`: {json.dumps(d)}\n")
         a("### Conclusion / উপসংহার\n")
-        a("* **English:** Doubling $100 in four hours is not achievable with long-only spot trading under any acceptable risk: even an impossible "
-          "perfect-foresight trader with 100% of capital and no stops reached +100% in the share of sessions shown above. Reaching it would require "
+        a("* **English:** Doubling $100 in four hours is not achievable with long-only spot trading under any acceptable risk. No tested strategy hit the "
+          "target in any session; a trader who knew every future closing price, used 100% of capital and no stops, still never doubled; only a physically "
+          "impossible trader buying every intrabar low and selling every high did so, in a small minority of sessions. Reaching it would require "
           "leverage far beyond what the risk policy allows (effectively gambling). Realistic alternatives: (1) measure success as risk-adjusted return per "
           "session and probability of loss; (2) longer horizons (weeks/months) where compounding of a small validated edge can matter; (3) keep capital "
           "flat when no strategy is validated — this preserves the $100.")
-        a("* **বাংলা:** স্পট মার্কেটে লিভারেজ ছাড়া ৪ ঘণ্টায় $100 থেকে $200 করা বাস্তবে সম্ভব নয়। এমনকি যে কাল্পনিক ট্রেডার ভবিষ্যতের প্রতিটি দাম আগে থেকে জানে, "
-          "সে-ও প্রায় কোনো সেশনেই লক্ষ্যে পৌঁছাতে পারেনি (উপরের সংখ্যা দেখুন)। লক্ষ্য পূরণ করতে বিপজ্জনক মাত্রার লিভারেজ লাগবে, যা জুয়ার সমান এবং আমাদের ঝুঁকি-নীতিতে নিষিদ্ধ। "
+        a("* **বাংলা:** স্পট মার্কেটে লিভারেজ ছাড়া ৪ ঘণ্টায় $100 থেকে $200 করা বাস্তবে সম্ভব নয়। ১,২৪৫টি সেশনের একটিতেও কোনো স্ট্র্যাটেজি লক্ষ্যে পৌঁছায়নি। "
+          "যে কাল্পনিক ট্রেডার ভবিষ্যতের প্রতিটি ক্লোজিং দাম আগে থেকে জানে, সে-ও একবারও দ্বিগুণ করতে পারেনি; শুধু প্রতিটি ক্যান্ডেলের ঠিক সর্বনিম্ন দামে কিনে সর্বোচ্চ দামে বেচা — যা অসম্ভব — তাতেই অল্প কিছু সেশনে সম্ভব হয়েছে। লক্ষ্য পূরণ করতে বিপজ্জনক মাত্রার লিভারেজ লাগবে, যা জুয়ার সমান এবং আমাদের ঝুঁকি-নীতিতে নিষিদ্ধ। "
           "বাস্তবসম্মত বিকল্প: প্রতি সেশনে ঝুঁকি-সমন্বিত রিটার্ন ও ক্ষতির সম্ভাবনা মাপা, দীর্ঘ সময়ের লক্ষ্য রাখা, এবং কোনো স্ট্র্যাটেজি যাচাই না হলে ট্রেড না করে মূলধন রক্ষা করা।\n")
     a("## 6. Bengali summary / বাংলা সারসংক্ষেপ\n")
     if s:

@@ -1,0 +1,463 @@
+{
+ "ok": true,
+ "summary": "113 passed in 5.28s",
+ "counts": {
+  "passed": 113
+ },
+ "seconds": 5.9,
+ "tests": [
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_auth_required"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_login_rate_limited"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_security_headers"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_secrets_never_returned"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_no_validated_strategy_means_inactive"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_emergency_stop_and_resume"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_settings_validation"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_shadow_session_replay_runs_and_is_labelled"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_paper_trader_rejects_live_mode"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_telegram_owner_only_and_stop"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_ml_and_rl_run"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_degradation_monitor"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_orderbook_and_news"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_rss_rejects_entities"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_paper_trade_columns_whitelisted"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_emergency_stop_cancels_pending_buy"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_session_end_flattens_position"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_settings_atomic_and_bad_bodies"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_eligibility_uses_latest_version"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_telegram_ignores_group_chats"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_app.py::test_rl_states_do_not_leak"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_fill_next_bar_open_and_pnl_exact"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_fees_reduce_equity"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_stop_has_priority_over_take_profit"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_gap_through_stop_fills_at_open"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_no_signal_no_trade"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_spot_never_exceeds_cash_or_risk"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_execution_costs_direction_and_precision"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_partial_fill_and_min_notional"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_rejects_and_network_failures_happen"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_stress_costs_monotone"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_market_specs"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_walk_forward_splits_do_not_overlap"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_bootstrap_and_monte_carlo"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_oracle_matches_brute_force[0]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_oracle_matches_brute_force[1]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_oracle_matches_brute_force[2]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_oracle_matches_brute_force[3]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_oracle_matches_brute_force[4]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_challenge_windows_non_overlapping"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_partial_exits_merge_and_equity_reconciles"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_end_of_test_remainder_not_dropped"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_session_loss_halt_resets_every_4h"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_backtest.py::test_oracle_intrabar_is_upper_bound"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>0]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>1]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>2]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>3]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>4]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>5]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>6]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>7]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>8]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>9]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>10]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>11]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>12]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_indicators_causal[<lambda>13]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_strategy_signals_causal[buy_hold]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_strategy_signals_causal[ema_trend]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_strategy_signals_causal[momentum]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_strategy_signals_causal[mean_reversion]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_strategy_signals_causal[breakout]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_strategy_signals_causal[pullback]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_strategy_signals_causal[vol_expansion]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_strategy_signals_causal[vwap_reversion]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_strategy_signals_causal[macd_stochrsi]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_strategy_signals_causal[ichimoku_trend]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_strategy_signals_causal[regime_adaptive]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_ml_features_causal"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_no_lookahead.py::test_label_uses_only_future_and_is_nan_at_end"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_yaml_loads_and_is_conservative"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_hard_ceilings_reject[bad0]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_hard_ceilings_reject[bad1]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_hard_ceilings_reject[bad2]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_hard_ceilings_reject[bad3]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_hard_ceilings_reject[bad4]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_hard_ceilings_reject[bad5]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_hard_ceilings_reject[bad6]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_hard_ceilings_reject[bad7]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_frozen"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_sizing_risk_and_caps"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_rejections[kw0-stale]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_rejections[kw1-volatility]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_rejections[kw2-liquidity]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_rejections[kw3-spread]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_rejections[kw4-invalid"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_rejections[kw5-abnormal]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_rejections[kw6-network]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_rejections[kw7-max"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_rejections[kw8-below"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_consecutive_losses_pause"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_session_halt_and_drawdown_kill"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_risk.py::test_emergency_stop_overrides_everything"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_binance_documented_signature"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_testnet_client_refuses_production[https://api.binance.com]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_testnet_client_refuses_production[https://api1.binance.com]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_testnet_client_refuses_production[http://evil.example]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_testnet_client_refuses_production[https://testnet.binance.vision.evil.com]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_no_withdraw_capability"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_signed_request_without_credentials_fails"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_signed_order_flow_and_headers"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_retry_on_5xx_then_ban_on_429"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_reconcile_detects_mismatch"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_rate_limiter_waits"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_redaction"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_token_compare"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_prompt_injection_flagged_and_cleaned"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_audit_chain_tamper_evident"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_registry_versions"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_testnet_requires_https_and_no_userinfo[http://testnet.binance.vision]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_testnet_requires_https_and_no_userinfo[https://user:pw@testnet.binance.vision]"
+  },
+  {
+   "status": "PASSED",
+   "id": "tests/test_security_exchange.py::test_testnet_base_immutable"
+  }
+ ],
+ "ran_at": "2026-11-24T23:32:52Z"
+}

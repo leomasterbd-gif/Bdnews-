@@ -1,0 +1,74 @@
+{
+ "BTC_USDT-5m": {
+  "train_bars": 1677,
+  "oos": {
+   "initial_equity": 100.0,
+   "final_equity": 99.43980137880001,
+   "net_return_pct": -0.5601986211999921,
+   "gross_return_pct": 0.2040205999999989,
+   "total_fees": 0.7642192212000001,
+   "total_slippage": 0.1530797130127516,
+   "trades": 13,
+   "win_rate_pct": 30.76923076923077,
+   "profit_factor": 0.7123434893055911,
+   "expectancy": -0.043092201630769336,
+   "avg_win": 0.34681453895000125,
+   "avg_loss": -0.21638408633333406,
+   "sharpe": -4.1469210767747136,
+   "sortino": -3.8769085275259942,
+   "max_drawdown_pct": 1.5737773114999798,
+   "exposure_pct": 29.695885509838998,
+   "capital_usd": 100.0,
+   "net_pnl_usd": -0.5601986211999872
+  },
+  "verdict": "REJECTED"
+ },
+ "XRP_USDT-5m": {
+  "train_bars": 1677,
+  "oos": {
+   "initial_equity": 100.0,
+   "final_equity": 98.21132863000004,
+   "net_return_pct": -1.7886713699999612,
+   "gross_return_pct": -0.727769999999961,
+   "total_fees": 1.06090137,
+   "total_slippage": 0.3049017512572301,
+   "trades": 18,
+   "win_rate_pct": 33.333333333333336,
+   "profit_factor": 0.27946798532003925,
+   "expectancy": -0.09937063166666624,
+   "avg_win": 0.11562668833333352,
+   "avg_loss": -0.20686929166666612,
+   "sharpe": -15.713932356164479,
+   "sortino": -12.081726972515932,
+   "max_drawdown_pct": 2.297617569999977,
+   "exposure_pct": 17.352415026833633,
+   "capital_usd": 100.0,
+   "net_pnl_usd": -1.7886713699999603
+  },
+  "verdict": "REJECTED"
+ },
+ "ETH_BTC-5m": {
+  "train_bars": 3110,
+  "oos": {
+   "initial_equity": 0.008695652173913044,
+   "final_equity": 0.008312235310127047,
+   "net_return_pct": -4.40929393353896,
+   "gross_return_pct": -1.9271805109999485,
+   "total_fees": 0.000215835949786,
+   "total_slippage": 0.00025816960293145995,
+   "trades": 42,
+   "win_rate_pct": 23.80952380952381,
+   "profit_factor": 0.10762066444293118,
+   "expectancy": -9.12897294728566e-06,
+   "avg_win": 4.623995199700033e-06,
+   "avg_loss": -1.342677549321869e-05,
+   "sharpe": -23.785658217978018,
+   "sortino": -12.202295571573561,
+   "max_drawdown_pct": 4.629858288064015,
+   "exposure_pct": 10.318225650916105,
+   "capital_usd": 100.0,
+   "net_pnl_usd": -4.409293933538964
+  },
+  "verdict": "REJECTED"
+ }
+}
