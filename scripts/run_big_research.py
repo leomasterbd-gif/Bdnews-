@@ -7,7 +7,6 @@ import time
 from concurrent.futures import ProcessPoolExecutor
 
 import _path  # noqa: F401
-import numpy as np
 from atm.backtest.validation import Gates, walk_forward
 from atm.data.loader import BINANCE_ARCHIVE, resample
 from atm.ml.models import evaluate_ml

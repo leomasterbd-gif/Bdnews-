@@ -1,0 +1,62 @@
+{
+ "created": "2026-11-25T00:08:31.049515+00:00",
+ "symbols": {
+  "BTCUSDT": {
+   "cash": 100.0,
+   "qty": 0.0,
+   "entry_px": null,
+   "stop_px": null,
+   "tp_px": null,
+   "entry_fee": 0.0,
+   "last_ts": "2026-11-25 00:00:00+00:00",
+   "trades": [],
+   "strategy": null
+  },
+  "ETHUSDT": {
+   "cash": 100.0,
+   "qty": 0.0,
+   "entry_px": null,
+   "stop_px": null,
+   "tp_px": null,
+   "entry_fee": 0.0,
+   "last_ts": "2026-11-25 00:00:00+00:00",
+   "trades": [],
+   "strategy": null
+  },
+  "XRPUSDT": {
+   "cash": 100.0,
+   "qty": 0.0,
+   "entry_px": null,
+   "stop_px": null,
+   "tp_px": null,
+   "entry_fee": 0.0,
+   "last_ts": "2026-11-25 00:00:00+00:00",
+   "trades": [],
+   "strategy": null
+  },
+  "SOLUSDT": {
+   "cash": 100.0,
+   "qty": 0.0,
+   "entry_px": null,
+   "stop_px": null,
+   "tp_px": null,
+   "entry_fee": 0.0,
+   "last_ts": "2026-11-25 00:00:00+00:00",
+   "trades": [],
+   "strategy": null
+  },
+  "BNBUSDT": {
+   "cash": 100.0,
+   "qty": 0.0,
+   "entry_px": null,
+   "stop_px": null,
+   "tp_px": null,
+   "entry_fee": 0.0,
+   "last_ts": "2026-11-25 00:00:00+00:00",
+   "trades": [],
+   "strategy": null
+  }
+ },
+ "last_run": "2026-11-25T00:08:33.793071+00:00",
+ "runs": 1
+}
