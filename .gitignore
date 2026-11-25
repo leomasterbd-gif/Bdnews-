@@ -10,3 +10,4 @@ backups/
 .env
 *.env
 !docker/env.example
+data/historical/binance/*.csv.gz

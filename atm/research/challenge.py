@@ -72,7 +72,10 @@ def run_challenge(datasets: dict[str, tuple[pd.DataFrame, MarketSpec]], strategi
             for s, e in wins:
                 if s < first:
                     continue
-                r = run_backtest(df, sig, market, limits, costs, capital_usd=capital, start=s, end=e)
+                # slice to warm-up + window: signals were computed on the full causal history,
+                # the engine only needs recent bars (ATR/abnormal filters) -> same result, much faster
+                w0 = max(0, s - 300)
+                r = run_backtest(df.iloc[w0:e], sig.iloc[w0:e], market, limits, costs, capital_usd=capital, start=s - w0, end=e - w0)
                 m = r.metrics
                 per_strategy[sname].append({"dataset": dname, "start": str(df.index[s]), "ret_pct": m["net_return_pct"],
                                             "pnl_usd": m["net_pnl_usd"], "trades": m["trades"], "fees_usd": m["total_fees"] * market.usd_per_quote,

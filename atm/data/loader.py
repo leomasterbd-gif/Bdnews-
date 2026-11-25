@@ -30,6 +30,10 @@ DATASETS = {
     "UNITTEST_BTC-1m": dict(symbol="UNKNOWN-BTC", quote="BTC", era="2017-11"),
     "XRP_ETH-1m": dict(symbol="XRPETH", quote="ETH", era="2019-10"),
 }
+# Two years of official Binance archives (scripts/fetch_binance_archive.py, checksums in binance/MANIFEST.json)
+BINANCE_ARCHIVE = {f"binance/{s}-5m": dict(symbol=s, quote="USDT", era="2024-11..2026-10")
+                   for s in ("BTCUSDT", "ETHUSDT", "XRPUSDT", "SOLUSDT", "BNBUSDT")}
+DATASETS.update({k: v for k, v in BINANCE_ARCHIVE.items() if (HIST_DIR / f"{k}.csv.gz").exists()})
 
 
 @dataclass
